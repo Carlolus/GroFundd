@@ -27,6 +27,10 @@ export class UserService {
     return this.repo.findOneBy({ id });
   }
 
+  findByEmail(email: string) {
+    return this.repo.findOneBy({ email });
+  }
+
   async update(id: string, dto: UpdateUserDto) {
     if (dto.password) {
       dto['passwordHash'] = await bcrypt.hash(dto.password, 10);
