@@ -9,7 +9,7 @@ services:
     ports:
       - "${FRONTEND_PORT}:4200"
     volumes:
-      - ./frontend:/app:Z
+      - ./frontend:/app:cached
       - /app/node_modules
     environment:
       - NODE_ENV=development
@@ -28,8 +28,9 @@ services:
     ports:
       - "${BACKEND_PORT}:3000"
     volumes:
-      - ./backend:/app:Z
-      - /app/node_modules
+    - ./backend/src:/app/src:cached
+    - ./backend/.env:/app/.env:cached
+    - /app/node_modules
     environment:
       - NODE_ENV=development
       - DB_HOST=postgres
