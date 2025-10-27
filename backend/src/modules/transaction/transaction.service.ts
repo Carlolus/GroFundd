@@ -41,7 +41,6 @@ export class TransactionService {
   async findAllByUser(userId: string): Promise<Transaction[]> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User ${userId} not found`);
-    console.log(user);
 
     return this.transactionRepo.find({
       where: { user: { id: userId } },
