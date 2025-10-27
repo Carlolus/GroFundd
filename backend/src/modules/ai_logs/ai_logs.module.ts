@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AiLogsService } from './ai_logs.service';
-import { AiLogsController } from './ai_logs.controller';
+import { AiLogService } from './ai_logs.service';
+import { AiLogController } from './ai_logs.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
+import { AiLog } from './entities/ai_log.entity';
 
 @Module({
-  controllers: [AiLogsController],
-  providers: [AiLogsService],
+  imports: [TypeOrmModule.forFeature([AiLog, User])],
+  controllers: [AiLogController],
+  providers: [AiLogService],
 })
 export class AiLogsModule {}
