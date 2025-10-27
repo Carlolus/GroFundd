@@ -1,10 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Patch, 
+  Param, 
+  Delete, 
+  Request, 
+  UseGuards 
+} from '@nestjs/common';
 import { AiLogService } from './ai_logs.service';
 import { CreateAiLogDto } from './dto/create-ai_log.dto';
 import { UpdateAiLogDto } from './dto/update-ai_log.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AiLog } from './entities/ai_log.entity';
-import { ApiTags, ApiBearerAuth, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+
+import { 
+  ApiTags, 
+  ApiBearerAuth, 
+  ApiResponse, 
+  ApiParam, 
+  ApiBody 
+} from '@nestjs/swagger';
 
 @ApiTags('AI Logs')
 @ApiBearerAuth()

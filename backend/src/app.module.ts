@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { CategorieModule } from './modules/category/categorie.module';
+import { CategoryModule } from './modules/category/category.module';
 import { TransactionModule } from './modules/transaction/transaction.module'; 
 import { BudgetModule } from './modules/budget/budget.module';
 import { InsightModule } from './modules/insight/insight.module';
@@ -20,7 +20,7 @@ import { AiLogsModule } from './modules/ai_logs/ai_logs.module';
     }),
     UserModule,
     AuthModule,
-    CategorieModule,
+    CategoryModule,
     TransactionModule,
     BudgetModule,
     InsightModule,

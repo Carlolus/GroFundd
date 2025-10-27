@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './entities/categorie.entity';
 import { User } from '../user/entities/user.entity';
-import { CreateCategorieDto } from './dto/create-categorie.dto';
-import { UpdateCategorieDto } from './dto/update-categorie.dto';
+import { CreateCategorieDto } from './dto/create-category.dto';
+import { UpdateCategorieDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategorieService {
@@ -62,7 +62,6 @@ export class CategorieService {
   async findAllByUser(userId: string): Promise<Category[]> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User ${userId} not found`);
-    console.log(user);
 
     return this.categoryRepo.find({
       where: { user: { id: userId } },
