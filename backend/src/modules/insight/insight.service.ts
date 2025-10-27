@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Insight } from './entities/insight.entity';
+import { User } from '../user/entities/user.entity';
 import { CreateInsightDto } from './dto/create-insight.dto';
 import { UpdateInsightDto } from './dto/update-insight.dto';
 
 @Injectable()
 export class InsightService {
-  create(createInsightDto: CreateInsightDto) {
-    return 'This action adds a new insight';
+  constructor(
+    @InjectRepository(Insight)
+    private readonly insightRepo: Repository<Insight>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+  ) {}
+
+  async create(dto: CreateInsightDto): Promise<Insight> {
+    const user = await this.userRepo.findOne({ where: { id: dto.user_id } });
+    if (!user) throw new NotFoundException(`User ${dto.user_id} not found`);
+
+    const insight = this.insightRepo.create({
+      user,
+      month: dto.month,
+      year: dto.year,
+      summary: dto.summary,
+      spending_score: dto.spending_score,
+    });
+
+    return this.insightRepo.save(insight);
   }
 
-  findAll() {
-    return `This action returns all insight`;
+  async findOne(id: string): Promise<Insight> {
+    const insight = await this.insightRepo.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!insight) throw new NotFoundException(`Insight ${id} not found`);
+    return insight;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} insight`;
+  async update(id: string, dto: UpdateInsightDto): Promise<Insight> {
+    const insight = await this.findOne(id);
+
+    if (dto.user_id) {
+      const user = await this.userRepo.findOne({ where: { id: dto.user_id } });
+      if (!user) throw new NotFoundException(`User ${dto.user_id} not found`);
+      insight.user = user;
+    }
+
+    if (dto.month !== undefined) insight.month = dto.month;
+    if (dto.year !== undefined) insight.year = dto.year;
+    if (dto.summary !== undefined) insight.summary = dto.summary;
+    if (dto.spending_score !== undefined)
+      insight.spending_score = dto.spending_score;
+
+    return this.insightRepo.save(insight);
   }
 
-  update(id: number, updateInsightDto: UpdateInsightDto) {
-    return `This action updates a #${id} insight`;
+  async remove(id: string): Promise<void> {
+    const insight = await this.findOne(id);
+    await this.insightRepo.remove(insight);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} insight`;
+  async findAllByUser(userId: string): Promise<Insight[]> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`User ${userId} not found`);
+    return this.insightRepo.find({ where: { user: { id: userId } }, relations: ['user'] });
   }
 }

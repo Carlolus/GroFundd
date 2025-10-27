@@ -1,34 +1,73 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { InsightService } from './insight.service';
 import { CreateInsightDto } from './dto/create-insight.dto';
 import { UpdateInsightDto } from './dto/update-insight.dto';
+import { Insight } from './entities/insight.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('insight')
+@ApiTags('Insights')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('insights')
 export class InsightController {
-  constructor(private readonly insightService: InsightService) {}
+  constructor(private readonly service: InsightService) {}
 
   @Post()
-  create(@Body() createInsightDto: CreateInsightDto) {
-    return this.insightService.create(createInsightDto);
+  @ApiResponse({ status: 201, description: 'Insight successfully created.' })
+  @ApiResponse({ status: 400, description: 'Invalid data.' })
+  @ApiBody({ type: CreateInsightDto })
+  create(@Body() dto: CreateInsightDto): Promise<Insight> {
+    return this.service.create(dto);
   }
 
   @Get()
-  findAll() {
-    return this.insightService.findAll();
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all insights of the authenticated user.',
+  })
+  findAll(@Request() req) {
+    return this.service.findAllByUser(req.user.id);
   }
 
   @Get(':id')
+  @ApiParam({ name: 'id', description: 'Insight ID' })
+  @ApiResponse({ status: 200, description: 'Returns a specific insight.' })
+  @ApiResponse({ status: 404, description: 'Insight not found.' })
   findOne(@Param('id') id: string) {
-    return this.insightService.findOne(+id);
+    return this.service.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInsightDto: UpdateInsightDto) {
-    return this.insightService.update(+id, updateInsightDto);
+  @ApiParam({ name: 'id', description: 'Insight ID' })
+  @ApiResponse({ status: 200, description: 'Insight successfully updated.' })
+  @ApiResponse({ status: 404, description: 'Insight not found.' })
+  @ApiBody({ type: UpdateInsightDto })
+  update(@Param('id') id: string, @Body() dto: UpdateInsightDto) {
+    return this.service.update(id, dto);
   }
 
   @Delete(':id')
+  @ApiParam({ name: 'id', description: 'Insight ID' })
+  @ApiResponse({ status: 200, description: 'Insight successfully deleted.' })
+  @ApiResponse({ status: 404, description: 'Insight not found.' })
   remove(@Param('id') id: string) {
-    return this.insightService.remove(+id);
+    return this.service.remove(id);
   }
 }
