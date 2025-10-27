@@ -38,10 +38,17 @@ export class TransactionService {
     return this.transactionRepo.save(transaction);
   }
 
-  async findAll(): Promise<Transaction[]> {
-    return this.transactionRepo.find({ relations: ['user', 'category'] });
-  }
+  async findAllByUser(userId: string): Promise<Transaction[]> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`User ${userId} not found`);
+    console.log(user);
 
+    return this.transactionRepo.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+  }
+  
   async findOne(id: string): Promise<Transaction> {
     const transaction = await this.transactionRepo.findOne({ where: { id }, relations: ['user', 'category'] });
     if (!transaction) throw new NotFoundException(`Transaction ${id} not found`);

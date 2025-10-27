@@ -32,10 +32,6 @@ export class CategorieService {
     return this.categoryRepo.save(category);
   }
 
-  async findAll(): Promise<Category[]> {
-    return this.categoryRepo.find({ relations: ['user'] });
-  }
-
   async findOne(id: string): Promise<Category> {
     const category = await this.categoryRepo.findOne({ where: { id }, relations: ['user'] });
     if (!category) throw new NotFoundException(`Category ${id} not found`);
@@ -63,10 +59,14 @@ export class CategorieService {
     await this.categoryRepo.remove(category);
   }
 
-  // Extra: obtener categorías por usuario
-  async findByUser(userId: string): Promise<Category[]> {
+  async findAllByUser(userId: string): Promise<Category[]> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User ${userId} not found`);
-    return this.categoryRepo.find({ where: { user }, relations: ['user'] });
+    console.log(user);
+
+    return this.categoryRepo.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
   }
 }

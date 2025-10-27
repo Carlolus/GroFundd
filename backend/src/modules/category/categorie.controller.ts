@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CategorieService } from './categorie.service';
 import { CreateCategorieDto } from './dto/create-categorie.dto';
 import { UpdateCategorieDto } from './dto/update-categorie.dto';
@@ -16,8 +16,9 @@ export class CategorieController {
   }
 
   @Get()
-  findAll(): Promise<Category[]> {
-    return this.categorieService.findAll();
+  findAll(@Request() req) {
+    console.log(req.user.id)
+    return this.categorieService.findAllByUser(req.user.id);
   }
 
   @Get(':id')
@@ -33,10 +34,5 @@ export class CategorieController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.categorieService.remove(id);
-  }
-
-  @Get('user/:userId')
-  findByUser(@Param('userId') userId: string): Promise<Category[]> {
-    return this.categorieService.findByUser(userId);
   }
 }
