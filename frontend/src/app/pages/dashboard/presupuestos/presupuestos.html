@@ -1,0 +1,71 @@
+<div class="presupuesto">
+  <!-- Encabezado -->
+  <header class="presupuesto-header">
+    <div>
+      <h1>💸 Presupuesto mensual</h1>
+      <p class="subtitle">Gestiona tus ingresos y controla tus gastos fácilmente</p>
+    </div>
+    <button class="btn-primary" (click)="nuevaCategoria()">+ Nueva categoría</button>
+  </header>
+
+  <!-- Resumen general -->
+  <section class="resumen">
+    <div class="resumen-card total">
+      <h3>Total asignado</h3>
+      <p>{{ totalPresupuesto | currency:'COP':'symbol':'1.0-0' }}</p>
+    </div>
+    <div class="resumen-card disponible">
+      <h3>Disponible</h3>
+      <p>{{ presupuestoDisponible | currency:'COP':'symbol':'1.0-0' }}</p>
+    </div>
+    <div class="resumen-card usado">
+      <h3>Gastado</h3>
+      <p>{{ presupuestoGastado | currency:'COP':'symbol':'1.0-0' }}</p>
+    </div>
+  </section>
+
+  <!-- Categorías -->
+  <section class="categorias">
+    <h2>Categorías de gasto</h2>
+    <div class="categorias-grid">
+      <div class="categoria-card" *ngFor="let c of categorias">
+        <div class="card-header">
+          <span class="nombre">{{ c.nombre }}</span>
+          <span class="porcentaje">{{ c.porcentaje }}%</span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress" [style.width.%]="c.porcentaje"></div>
+        </div>
+
+        <p>Asignado: {{ c.asignado | currency:'COP':'symbol':'1.0-0' }}</p>
+        <p>Gastado: {{ c.gastado | currency:'COP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabla de transacciones -->
+  <section class="tabla-transacciones">
+    <h2>Detalle de movimientos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Categoría</th>
+          <th>Descripción</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of transacciones">
+          <td>{{ t.fecha }}</td>
+          <td>{{ t.categoria }}</td>
+          <td>{{ t.descripcion }}</td>
+          <td [class.negative]="t.monto < 0" [class.positive]="t.monto > 0">
+            {{ t.monto | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

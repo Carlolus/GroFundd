@@ -1,0 +1,43 @@
+<div class="perfil-container">
+  <div class="perfil-header">
+    <h1>👤 Perfil de Usuario</h1>
+    <button class="btn-primary" (click)="modoEdicion = !modoEdicion">
+      {{ modoEdicion ? 'Cancelar' : 'Editar Perfil' }}
+    </button>
+  </div>
+
+  <div class="perfil-content">
+    <div class="perfil-foto">
+      <img [src]="usuario.foto" alt="Foto de perfil" />
+    </div>
+
+    <form *ngIf="modoEdicion; else verPerfil" (ngSubmit)="guardarCambios()">
+      <label>Nombre completo</label>
+      <input type="text" [(ngModel)]="usuario.nombre" name="nombre" />
+
+      <label>Correo electrónico</label>
+      <input type="email" [(ngModel)]="usuario.correo" name="correo" />
+
+      <label>Teléfono</label>
+      <input type="text" [(ngModel)]="usuario.telefono" name="telefono" />
+
+      <label>Ocupación</label>
+      <input type="text" [(ngModel)]="usuario.ocupacion" name="ocupacion" />
+
+      <label>Ciudad</label>
+      <input type="text" [(ngModel)]="usuario.ciudad" name="ciudad" />
+
+      <button type="submit" class="btn-save">💾 Guardar Cambios</button>
+    </form>
+
+    <ng-template #verPerfil>
+      <div class="perfil-info">
+        <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+        <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+        <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+        <p><strong>Ocupación:</strong> {{ usuario.ocupacion }}</p>
+        <p><strong>Ciudad:</strong> {{ usuario.ciudad }}</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

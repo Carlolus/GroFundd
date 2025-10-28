@@ -1,0 +1,166 @@
+:host {
+  display: block;
+  background-color: #f9fafb;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #1e3a8a;
+}
+
+.metas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
+}
+
+/* Progreso total */
+.resumen {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  .progress-circle {
+    display: inline-block;
+    margin-top: 1rem;
+
+    .circle {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .bg {
+      fill: none;
+      stroke: #e0e7ff;
+      stroke-width: 3.8;
+    }
+
+    .progress {
+      fill: none;
+      stroke: #2563eb;
+      stroke-width: 3.8;
+      stroke-linecap: round;
+      transition: stroke-dasharray 0.6s ease;
+    }
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+  }
+}
+
+/* Metas activas */
+.metas-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+}
+
+.meta-card {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.15);
+  }
+
+  .meta-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e7ff;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+
+    .progress {
+      height: 100%;
+      background-color: #2563eb;
+      transition: width 0.3s ease;
+    }
+  }
+
+  .fecha {
+    font-size: 0.9rem;
+    color: #64748b;
+  }
+}
+
+/* Metas completadas */
+.metas-completadas {
+  margin-top: 3rem;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1);
+
+    th {
+      background-color: #2563eb;
+      color: white;
+      text-align: left;
+      padding: 0.8rem;
+    }
+
+    td {
+      padding: 0.8rem;
+      border-top: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+  }
+}
