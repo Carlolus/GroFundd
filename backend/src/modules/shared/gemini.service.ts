@@ -17,14 +17,17 @@ export class GeminiService implements OnModuleInit {
 
     this.client = new GoogleGenerativeAI(apiKey);
 
-    // Especifica el modelo que deseas usar
-    // Ej: 'gemini-1.5-flash', 'gemini-pro'
     this.model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash'});
   }
 
   async parseTransactionsFromText(text: string, user:string, categories: string[]) {
 
+    const today = new Date();
+    const onlyDate = today.toISOString().split('T')[0]; // "2025-10-28"
+
+
 const prompt = `
+Current date: "${onlyDate}"
 You are a financial assistant specialized in analyzing natural language text.
 
 The user with UUID "${user}" describes their day, mentioning possible incomes and expenses.  
@@ -56,7 +59,7 @@ Your task is to:
 
 ### TRANSACTION INSTRUCTIONS
 
-Each transaction must follow this format:
+Each transaction must follow this format, you should be aware of the current date, if the user says Yesterday you should put that day in date:
 
 \`\`\`json
 {
