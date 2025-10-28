@@ -8,6 +8,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { InsightModule } from './modules/insight/insight.module';
 import { AiLogsModule } from './modules/ai_logs/ai_logs.module';
+import { AiParseModule } from './modules/ai-parse/ai-parse.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { AiLogsModule } from './modules/ai_logs/ai_logs.module';
     TransactionModule,
     BudgetModule,
     InsightModule,
-    AiLogsModule
+    AiLogsModule,
+    AiParseModule
   ],
 })
 export class AppModule {}
