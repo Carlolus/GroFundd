@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
 @Entity('categories')
 export class Category {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @ManyToOne(() => User, { nullable: false })

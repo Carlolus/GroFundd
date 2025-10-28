@@ -5,6 +5,8 @@ import { Category } from './entities/categorie.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateCategorieDto } from './dto/create-category.dto';
 import { UpdateCategorieDto } from './dto/update-category.dto';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class CategorieService {
@@ -16,13 +18,18 @@ export class CategorieService {
   ) {}
 
   async create(dto: CreateCategorieDto): Promise<Category> {
-    // Validar que el usuario existe
+
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
     if (!user) {
       throw new NotFoundException(`User ${dto.userId} not found`);
     }
 
+    const c_id = dto.id ?? uuidv4();
+
+    console.log("UUID: "+c_id);
+
     const category = this.categoryRepo.create({
+      id: c_id,
       name: dto.name,
       icon: dto.icon,
       isAiGenerated: dto.isAiGenerated,
