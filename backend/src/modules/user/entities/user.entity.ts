@@ -17,7 +17,7 @@ export class User {
   @Column({ name: 'last_name', length: 100, nullable: true })
   lastName: string;
 
-  @Column({ length: 10, default: 'USD' })
+  @Column({ length: 10, default: 'null' })
   currency: string;
 
   @CreateDateColumn({ name: 'created_at' })
