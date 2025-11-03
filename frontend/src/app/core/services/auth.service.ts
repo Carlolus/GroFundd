@@ -30,10 +30,8 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/users`, userData);
   }
 
-  getCurrentUser(): any {
-    if (this.currentUser) return this.currentUser;
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) this.currentUser = JSON.parse(storedUser);
-    return this.currentUser;
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('access_token');
+    return !!token;
   }
 }
