@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ParsedTransactionDto } from './dto/parsed-transaction.dto';
 import { Category } from '../category/entities/categorie.entity';
 import { GeminiService } from '../shared/gemini.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AiParseService {
@@ -11,6 +11,7 @@ export class AiParseService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     private readonly geminiService: GeminiService,
+    private readonly userService: UserService
   ) {}
 
   async parseText(text: string, userId: string): Promise<any> {
@@ -19,11 +20,16 @@ export class AiParseService {
       select: ['id', 'name'], // optional optimization
     });
 
+    const user = await this.userService.findOne(userId);
+
+    const currency_t = user?.currency || "COP";
+
     const categoryList = categories.map(c => `${c.name} (id: ${c.id})`);
 
     const aiResult = await this.geminiService.parseTransactionsFromText(
       text,
       userId,
+      currency_t,
       categoryList
     );
     console.log(aiResult);

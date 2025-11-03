@@ -20,17 +20,18 @@ export class GeminiService implements OnModuleInit {
     this.model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash'});
   }
 
-  async parseTransactionsFromText(text: string, user:string, categories: string[]) {
+  async parseTransactionsFromText(text: string, user:string, currency: string, categories: string[]) {
 
     const today = new Date();
     const onlyDate = today.toISOString().split('T')[0]; // "2025-10-28"
+    console.log("Moneda recibida:", currency)
 
 
 const prompt = `
 Current date: "${onlyDate}"
 You are a financial assistant specialized in analyzing natural language text.
 
-The user with UUID "${user}" describes their day, mentioning possible incomes and expenses.  
+The user with UUID "${user}" with currency "${currency}" describes their day, mentioning possible incomes and expenses.  
 Your task is to:
 1. Identify all necessary **categories** (use existing ones when possible, or create new ones if they don’t match).
 2. Identify all **transactions** (income or expense) mentioned in the text.
@@ -123,30 +124,19 @@ Respond **only** with the final JSON object.
     // --- 🛠️ CORRECCIÓN CLAVE: Limpiar la respuesta ---
     let jsonString = responseText.trim();
     
-    // 1. Quitar '```json' al inicio
     if (jsonString.startsWith('```json')) {
       jsonString = jsonString.substring(7);
     }
-    // 2. Quitar '```' al final
     if (jsonString.endsWith('```')) {
       jsonString = jsonString.substring(0, jsonString.length - 3);
     }
-    // 3. Limpiar cualquier espacio o salto de línea extra
     jsonString = jsonString.trim(); 
-
-    // Intentar parsear JSON seguro con la cadena LIMPIA
     try {
       const parsed = JSON.parse(jsonString);
-      
-      // Retornar el objeto completo (no un arreglo), que es la estructura de tu prompt
       return parsed; 
       
     } catch(e) {
-      // Si falla, es porque el JSON limpio sigue siendo inválido.
       console.error("🚫 ERROR: Fallo al parsear el JSON de Gemini. Cadena:", jsonString, "Error:", e);
-      
-      // Retornar la estructura de objeto vacía que el controlador espera.
-      // (Si no se ha implementado AiParseResponseDto, usar un objeto vacío que coincida con la estructura)
       return { categories: [], transactions: [] }; 
     }
   }
