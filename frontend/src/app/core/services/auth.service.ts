@@ -26,6 +26,12 @@ export class AuthService {
     );
   }
 
+  logout(): void {
+    this.currentUser = null;
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+  }
+
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/users`, userData);
   }

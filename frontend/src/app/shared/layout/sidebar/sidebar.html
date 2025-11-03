@@ -1,0 +1,15 @@
+<aside class="sidebar" [class.open]="isOpen">
+      <div class="sidebar-content">
+        <nav class="nav-section">
+          <a 
+            *ngFor="let item of menuItems" 
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="nav-item"
+          >
+            <span class="icon" [innerHTML]="item.icon"></span>
+            <span class="label" [class.hidden]="!isOpen">{{ item.label }}</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
