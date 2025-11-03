@@ -39,6 +39,15 @@ export class TransactionController {
     return this.transactionService.create(dto);
   }
 
+  @Post('bulk')
+    @ApiBody({ type: [CreateTransactionDto] })
+    @ApiResponse({ status: 201, description: 'Categories created successfully.', type: [Transaction] })
+    @ApiResponse({ status: 404, description: 'User not found.' })
+    createBulk(@Body() dtos: CreateTransactionDto[], @Request() req): Promise<Transaction[]> {
+      const dtosWithUser = dtos.map(dto => ({ ...dto, userId: req.user.id }));
+      return this.transactionService.createMany(dtosWithUser);
+  }
+
   @Get()
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'List all transactions for current user.', type: [Transaction] })

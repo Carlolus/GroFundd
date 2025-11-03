@@ -22,3 +22,24 @@ export class Category {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }
+
+export class CategoryForFront {
+  @PrimaryColumn('uuid')
+  id: string;
+
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'user_id' })
+  user: string;
+
+  @Column({ length: 100 })
+  name: string;
+
+  @Column({ length: 50, nullable: true })
+  icon?: string;
+
+  @Column({ default: false })
+  isAiGenerated: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+}

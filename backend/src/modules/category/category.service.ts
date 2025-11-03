@@ -66,6 +66,11 @@ export class CategorieService {
     await this.categoryRepo.remove(category);
   }
 
+  async createMany(dtos: CreateCategorieDto[]): Promise<Category[]> {
+    const categories = this.categoryRepo.create(dtos);
+    return this.categoryRepo.save(categories);
+  }
+
   async findAllByUser(userId: string): Promise<Category[]> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User ${userId} not found`);

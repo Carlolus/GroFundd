@@ -83,6 +83,11 @@ export class TransactionService {
     await this.transactionRepo.remove(transaction);
   }
 
+  async createMany(dtos: CreateTransactionDto[]): Promise<Transaction[]> {
+    const transactions = this.transactionRepo.create(dtos);
+    return this.transactionRepo.save(transactions);
+  }
+
   // Extra: obtener transacciones de un usuario
   async findByUser(userId: string): Promise<Transaction[]> {
     const user = await this.userRepo.findOne({ where: { id: userId } });

@@ -41,6 +41,15 @@ export class CategorieController {
     return this.categorieService.create(dto);
   }
 
+  @Post('bulk')
+  @ApiBody({ type: [CreateCategorieDto] })
+  @ApiResponse({ status: 201, description: 'Categories created successfully.', type: [Category] })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  createBulk(@Body() dtos: CreateCategorieDto[], @Request() req): Promise<Category[]> {
+    const dtosWithUser = dtos.map(dto => ({ ...dto, userId: req.user.id }));
+    return this.categorieService.createMany(dtosWithUser);
+  }
+
   @Get()
   @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'List all categories for current user.', type: [Category] })
