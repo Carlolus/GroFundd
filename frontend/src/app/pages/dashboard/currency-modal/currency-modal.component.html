@@ -1,0 +1,31 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-image">
+      <img src="assets/currency-banner.png" alt="Monedas" />
+    </div>
+
+    <h2>Selecciona tu moneda</h2>
+    <p>Busca o elige una de la lista.</p>
+
+    <input
+      type="text"
+      placeholder="Buscar moneda..."
+      [(ngModel)]="searchTerm"
+      class="search-input"
+    />
+
+    <div class="currency-slider">
+      <div
+        class="currency-item"
+        *ngFor="let currency of filteredCurrencies()"
+        [class.selected]="selectedCurrency === currency.code"
+        (click)="selectedCurrency = currency.code"
+      >
+        <span class="flag">{{ currency.flag }}</span>
+        <span>{{ currency.name }} ({{ currency.code }})</span>
+      </div>
+    </div>
+
+    <button class="save-btn" (click)="saveCurrency()">Guardar</button>
+  </div>
+</div>

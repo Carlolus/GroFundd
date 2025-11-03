@@ -1,0 +1,22 @@
+<div class="status-modal-overlay">
+  <div class="status-modal" [ngClass]="type">
+    <button class="status-modal__close" (click)="onClose()">×</button>
+
+    <div class="status-modal__icon">
+      <img
+        [src]="type === 'success' ? 'assets/icons/check.png' : 'assets/icons/error.png'"
+        [alt]="type"
+      />
+    </div>
+
+    <div class="status-modal__image">
+      <img [src]="imageSrc" [alt]="type + ' image'" />
+    </div>
+
+    <div class="status-modal__message">
+      <p>{{ message }}</p>
+    </div>
+
+    <button class="status-modal__button" (click)="onClose()">Aceptar</button>
+  </div>
+</div>

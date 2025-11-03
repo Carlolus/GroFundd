@@ -1,20 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
+import { AuthService } from '../../core/services/auth.service';
+import { User } from '../../core/interfaces/user.interface';
+import { UserService } from '../../core/services/user.service';
+import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
+import { ModalStatusComponent } from '../../shared/components/modals/modal-status/modal-status.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss'],
-  imports: [CommonModule, BaseChartDirective, CurrencyPipe]
+  imports: [CommonModule, BaseChartDirective, CurrencyPipe, CurrencyModalComponent, ModalStatusComponent]
 })
-
-
-export class DashboardComponent {
-  // Nombre del usuario
-  username = 'Carlos';
+export class DashboardComponent implements OnInit {
+  showCurrencyModal = false;
+  showSuccessModal = false;
+  user?: User;
+  username = this.user?.firstName;
+  showModal = signal(false);
+  modalType = signal<'success' | 'error'>('success');
+  modalMessage = signal('');
+  modalImage = signal('');
+  currency = '';
 
   //Totales principales
   balance = 4500000;
@@ -78,11 +88,40 @@ export class DashboardComponent {
   };
   lineChartType: 'line' = 'line'; // tipo explícito
 
-  // 👇 Sidebar
   isSidebarCollapsed: boolean = false;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.user = this.userService.getCurrentUser();
+    this.username = this.user?.firstName;
+    if (this.user && this.user.currency == 'null') {
+      this.showCurrencyModal = true;
+    }
+  }
+
+  onCurrencySelected(currency: string): void {
+    if (!this.user) return;
+    this.user.currency = currency;
+    this.userService.updateUser(this.user).subscribe(updatedUser => {
+      this.user = updatedUser;
+      this.showCurrencyModal = false;
+      this.openModal('success', 'Actualizado correctamente.', 'assets/images/marmot-success.png');
+    });
+  }
+
+  openModal(type: 'success' | 'error', message: string, imageSrc: string): void {
+    this.modalType.set(type);
+    this.modalMessage.set(message);
+    this.modalImage.set(imageSrc);
+    this.showModal.set(true);
+  }
+
+  onModalClose(): void {
+    this.showModal.set(false);
+  }
 
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }
-

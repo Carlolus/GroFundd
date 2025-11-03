@@ -1,3 +1,5 @@
+<app-currency-modal *ngIf="showCurrencyModal" (currencySelected)="onCurrencySelected($event)"></app-currency-modal>
+
 <div class="dashboard">
   <!-- Encabezado -->
   <header class="dashboard-header">
@@ -16,19 +18,19 @@
   <section class="summary-cards">
     <div class="card balance">
       <h2>Balance total</h2>
-      <p class="value">{{ balance | currency:'COP':'symbol':'1.0-0' }}</p>
+      <p class="value">{{ balance | currency:user?.currency:'symbol':'1.0-0' }}</p>
       <button class="btn small">Ver detalle</button>
     </div>
 
     <div class="card expenses">
       <h2>Gastos</h2>
-      <p class="value">{{ expenses | currency:'COP':'symbol':'1.0-0' }}</p>
+      <p class="value">{{ expenses | currency:user?.currency:'symbol':'1.0-0' }}</p>
       <button class="btn small">Analizar</button>
     </div>
 
     <div class="card savings">
       <h2>Ahorros</h2>
-      <p class="value">{{ savings | currency:'COP':'symbol':'1.0-0' }}</p>
+      <p class="value">{{ savings | currency:user?.currency:'symbol':'1.0-0' }}</p>
       <button class="btn small">Ver proyección</button>
     </div>
   </section>
@@ -76,10 +78,17 @@
           <td>{{ t.date }}</td>
           <td>{{ t.description }}</td>
           <td [class.negative]="t.amount < 0" [class.positive]="t.amount > 0">
-            {{ t.amount | currency:'COP':'symbol':'1.0-0' }}
+            {{ t.amount | currency:user?.currency:'symbol':'1.0-0' }}
           </td>
         </tr>
       </tbody>
     </table>
   </section>
 </div>
+
+<app-modal
+  *ngIf="showModal()"
+  [type]="modalType()"
+  [message]="modalMessage()"
+  (close)="onModalClose()"
+></app-modal>
