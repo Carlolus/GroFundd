@@ -118,14 +118,36 @@ Respond **only** with the final JSON object.
 
     const result = await this.model.generateContent(prompt);
     const responseText = result.response.text();
-    console.log(responseText)
+    console.log("Respuesta RAW de Gemini:", responseText)
 
-    // Intentar parsear JSON seguro
+    // --- 🛠️ CORRECCIÓN CLAVE: Limpiar la respuesta ---
+    let jsonString = responseText.trim();
+    
+    // 1. Quitar '```json' al inicio
+    if (jsonString.startsWith('```json')) {
+      jsonString = jsonString.substring(7);
+    }
+    // 2. Quitar '```' al final
+    if (jsonString.endsWith('```')) {
+      jsonString = jsonString.substring(0, jsonString.length - 3);
+    }
+    // 3. Limpiar cualquier espacio o salto de línea extra
+    jsonString = jsonString.trim(); 
+
+    // Intentar parsear JSON seguro con la cadena LIMPIA
     try {
-      const parsed = JSON.parse(responseText);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
+      const parsed = JSON.parse(jsonString);
+      
+      // Retornar el objeto completo (no un arreglo), que es la estructura de tu prompt
+      return parsed; 
+      
+    } catch(e) {
+      // Si falla, es porque el JSON limpio sigue siendo inválido.
+      console.error("🚫 ERROR: Fallo al parsear el JSON de Gemini. Cadena:", jsonString, "Error:", e);
+      
+      // Retornar la estructura de objeto vacía que el controlador espera.
+      // (Si no se ha implementado AiParseResponseDto, usar un objeto vacío que coincida con la estructura)
+      return { categories: [], transactions: [] }; 
     }
   }
 }

@@ -13,7 +13,7 @@ export class AiParseService {
     private readonly geminiService: GeminiService,
   ) {}
 
-  async parseText(text: string, userId: string): Promise<ParsedTransactionDto[]> {
+  async parseText(text: string, userId: string): Promise<any> {
     const categories = await this.categoryRepository.find({
       where: { user: { id: userId } },
       select: ['id', 'name'], // optional optimization
@@ -26,16 +26,8 @@ export class AiParseService {
       userId,
       categoryList
     );
-    console.log(aiResult)
+    console.log(aiResult);
 
-    return aiResult.map(item => {
-      const matchedCategory = categories.find(
-        c => c.name.toLowerCase() === item.aiCategorySuggestion?.toLowerCase(),
-      );
-      return {
-        ...item,
-        categoryId: matchedCategory ? matchedCategory.id : undefined,
-      };
-    });
+    return aiResult;
   }
 }
