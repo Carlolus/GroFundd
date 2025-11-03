@@ -5,7 +5,7 @@ import { ChartConfiguration } from 'chart.js';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/interfaces/user.interface';
 import { UserService } from '../../core/services/user.service';
-import { CurrencyModalComponent } from './currency-modal/currency-modal.component';
+import { CurrencyModalComponent } from '../../shared/components/modals/modal-currency/currency-modal.component';
 import { ModalStatusComponent } from '../../shared/components/modals/modal-status/modal-status.component';
 
 @Component({
