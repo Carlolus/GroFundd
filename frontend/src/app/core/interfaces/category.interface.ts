@@ -1,7 +1,7 @@
 import { User } from './user.interface';
 
 export interface Category {
-  id: string;
+  id: number;
   user: string;
   name: string;
   icon: string | null;

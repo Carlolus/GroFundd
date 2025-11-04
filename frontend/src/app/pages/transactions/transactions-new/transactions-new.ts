@@ -7,11 +7,6 @@ import { CategoryService } from '../../../core/services/category.service';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { ModalStatusComponent } from '../../../shared/components/modals/modal-status/modal-status.component';
 
-interface ApiResponse {
-  categories: Category[];
-  transactions: ParsedTransaction[];
-}
-
 interface EditableTransaction extends ParsedTransaction {
   id: string; // Temporal ID for frontend management
   categoryName?: string; // For display
@@ -128,12 +123,12 @@ export class TransactionsNew {
     this.editableTransactions = this.editableTransactions.filter(t => t.id !== id);
   }
 
-  updateTransactionCategory(transaction: EditableTransaction, category: string) {
+  updateTransactionCategory(transaction: EditableTransaction, category: number) {
     transaction.category = category;
     transaction.categoryName = this.availableCategories.find(c => c.id === category)?.name;
   }
 
-  removeCategoryAndReassign(categoryId: string) {
+  removeCategoryAndReassign(categoryId: number) {
     const category = this.availableCategories.find(c => c.id === categoryId);
     if (category) {
       category.markedForDeletion = true;
@@ -182,10 +177,8 @@ export class TransactionsNew {
       
 
       try {
-        const [rCategories, rTransactions] = await Promise.all([
-          this.categoryService.createManyCategories(cleanCategories),
-          this.transactionService.createManyTransactions(cleanTransactions)
-        ]);
+        const rCategories = await this.categoryService.createManyCategories(cleanCategories);
+        const rTransactions = await this.transactionService.createManyTransactions(cleanTransactions);
         this.openModal('success', 'Datos registrados correctamente.', 'assets/images/marmot-success.png');
       } catch (error) {
         console.error(error);

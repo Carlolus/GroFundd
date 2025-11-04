@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 // Interfaces para el servicio
 export interface Category {
-  id: string;
+  id: number;
   user: string;
   name: string;
   icon: string | null;
@@ -14,7 +14,7 @@ export interface Category {
 
 export interface ParsedTransaction {
   user: string;
-  category: string;
+  category: number;
   type: 'income' | 'expense';
   amount: number;
   description: string;

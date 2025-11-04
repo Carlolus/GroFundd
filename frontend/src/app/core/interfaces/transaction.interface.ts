@@ -3,7 +3,7 @@ import { Category } from './category.interface';
 
 export interface Transaction {
   user: string;
-  category: string;
+  category: number;
   type: 'income' | 'expense';
   amount: number;
   description: string;
