@@ -1,0 +1,94 @@
+Necesito que revises el componente pages/transactions/transactions.view.
+
+Necesito que copies la estructura y diseño de la tabla pero ahora para la entidad categorias, esto es lo que devuelve 
+el servicio get categorias desde el backend:
+[
+  {
+    "id": 4,
+    "user": {
+      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
+      "email": "c@p.com",
+      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
+      "firstName": "Carlos",
+      "lastName": "Ponce",
+      "currency": "COP",
+      "createdAt": "2025-11-04T14:52:41.032Z",
+      "updatedAt": "2025-11-04T14:53:09.721Z"
+    },
+    "name": "Gimnasio",
+    "icon": null,
+    "isAiGenerated": true,
+    "createdAt": "2025-11-04T00:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "user": {
+      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
+      "email": "c@p.com",
+      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
+      "firstName": "Carlos",
+      "lastName": "Ponce",
+      "currency": "COP",
+      "createdAt": "2025-11-04T14:52:41.032Z",
+      "updatedAt": "2025-11-04T14:53:09.721Z"
+    },
+    "name": "Ingresos por Proyectos",
+    "icon": null,
+    "isAiGenerated": true,
+    "createdAt": "2025-11-04T00:00:00.000Z"
+  },
+  {
+    "id": 1,
+    "user": {
+      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
+      "email": "c@p.com",
+      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
+      "firstName": "Carlos",
+      "lastName": "Ponce",
+      "currency": "COP",
+      "createdAt": "2025-11-04T14:52:41.032Z",
+      "updatedAt": "2025-11-04T14:53:09.721Z"
+    },
+    "name": "Comida",
+    "icon": null,
+    "isAiGenerated": true,
+    "createdAt": "2025-11-04T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "user": {
+      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
+      "email": "c@p.com",
+      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
+      "firstName": "Carlos",
+      "lastName": "Ponce",
+      "currency": "COP",
+      "createdAt": "2025-11-04T14:52:41.032Z",
+      "updatedAt": "2025-11-04T14:53:09.721Z"
+    },
+    "name": "Transporte",
+    "icon": null,
+    "isAiGenerated": true,
+    "createdAt": "2025-11-04T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "user": {
+      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
+      "email": "c@p.com",
+      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
+      "firstName": "Carlos",
+      "lastName": "Ponce",
+      "currency": "COP",
+      "createdAt": "2025-11-04T14:52:41.032Z",
+      "updatedAt": "2025-11-04T14:53:09.721Z"
+    },
+    "name": "Internet",
+    "icon": null,
+    "isAiGenerated": true,
+    "createdAt": "2025-11-04T00:00:00.000Z"
+  }
+]
+
+El servicio que devuelve las categorias está ubicado en core/services/category.service.ts/getCategories(), quiero que el diseño sea similar,
+pero si ves necesario añadir mas carácteristicas, perfecto.
