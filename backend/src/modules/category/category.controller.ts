@@ -62,7 +62,7 @@ export class CategorieController {
   @ApiParam({ name: 'id', example: '7a82f0c9-2a73-4d91-9cf3-c7cc2c9357e3', description: 'Category ID' })
   @ApiResponse({ status: 200, description: 'Returns a category by ID.', type: Category })
   @ApiResponse({ status: 404, description: 'Category not found.' })
-  findOne(@Param('id') id: string): Promise<Category> {
+  findOne(@Param('id') id: number): Promise<Category> {
     return this.categorieService.findOne(id);
   }
 
@@ -72,7 +72,7 @@ export class CategorieController {
   @ApiBody({ type: UpdateCategorieDto })
   @ApiResponse({ status: 200, description: 'Category updated successfully.', type: Category })
   @ApiResponse({ status: 404, description: 'Category not found.' })
-  update(@Param('id') id: string, @Body() dto: UpdateCategorieDto): Promise<Category> {
+  update(@Param('id') id: number, @Body() dto: UpdateCategorieDto): Promise<Category> {
     return this.categorieService.update(id, dto);
   }
 
@@ -81,7 +81,7 @@ export class CategorieController {
   @ApiParam({ name: 'id', example: '7a82f0c9-2a73-4d91-9cf3-c7cc2c9357e3', description: 'Category ID' })
   @ApiResponse({ status: 200, description: 'Category deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Category not found.' })
-  remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id') id: number): Promise<void> {
     return this.categorieService.remove(id);
   }
 }

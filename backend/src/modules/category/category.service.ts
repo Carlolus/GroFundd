@@ -5,7 +5,6 @@ import { Category } from './entities/categorie.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateCategorieDto } from './dto/create-category.dto';
 import { UpdateCategorieDto } from './dto/update-category.dto';
-import { v4 as uuidv4 } from 'uuid';
 
 
 @Injectable()
@@ -18,18 +17,22 @@ export class CategorieService {
   ) {}
 
   async create(dto: CreateCategorieDto): Promise<Category> {
-
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
     if (!user) {
       throw new NotFoundException(`User ${dto.userId} not found`);
     }
 
-    const c_id = dto.id ?? uuidv4();
+    const lastCategory = await this.categoryRepo.find({
+      order: { id: 'DESC' },
+      take: 1,
+    });
 
-    console.log("UUID: "+c_id);
+    const newId = dto.id ?? (lastCategory.length ? Number(lastCategory[0].id) + 1 : 1);
+
+    console.log('ID:', newId);
 
     const category = this.categoryRepo.create({
-      id: c_id,
+      id: newId,
       name: dto.name,
       icon: dto.icon,
       isAiGenerated: dto.isAiGenerated,
@@ -39,13 +42,13 @@ export class CategorieService {
     return this.categoryRepo.save(category);
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: number): Promise<Category> {
     const category = await this.categoryRepo.findOne({ where: { id }, relations: ['user'] });
     if (!category) throw new NotFoundException(`Category ${id} not found`);
     return category;
   }
 
-  async update(id: string, dto: UpdateCategorieDto): Promise<Category> {
+  async update(id: number, dto: UpdateCategorieDto): Promise<Category> {
     const category = await this.findOne(id);
 
     if (dto.userId) {
@@ -61,7 +64,7 @@ export class CategorieService {
     return this.categoryRepo.save(category);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const category = await this.findOne(id);
     await this.categoryRepo.remove(category);
   }

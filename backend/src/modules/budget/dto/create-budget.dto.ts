@@ -21,8 +21,8 @@ export class CreateBudgetDto {
     description: 'ID of the category associated with this budget.',
     example: 'a9f2a70d-23b1-4c4b-bb6b-3921c872f3e4',
   })
-  @IsUUID()
-  category_id: string;
+  @IsNumber()
+  category_id: number;
 
   @ApiProperty({
     description: 'Month of the budget (1–12).',

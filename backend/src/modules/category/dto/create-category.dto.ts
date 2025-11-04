@@ -1,15 +1,15 @@
-import { IsString, IsOptional, IsBoolean, IsUUID, Length } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsUUID, Length, IsNumber } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCategorieDto {
 
   @ApiProperty({
-    description: 'Unique identifier for the category.',
-    example: '9d52e38c-5b97-4a5a-8f2f-99bda113a0d3',
+    description: 'Unique identifier for the category, you cn include it or let the backend generate one.',
+    example: '1',
   })
-  @IsUUID()
+  @IsNumber()
   @IsOptional()
-  id: string;
+  id: number;
 
   @ApiProperty({
     description: 'User unique identifier (UUID)',
