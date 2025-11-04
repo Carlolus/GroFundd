@@ -123,24 +123,30 @@ export class TransactionsNew {
     this.editableTransactions = this.editableTransactions.filter(t => t.id !== id);
   }
 
-  updateTransactionCategory(transaction: EditableTransaction, category: number) {
-    transaction.category = category;
-    transaction.categoryName = this.availableCategories.find(c => c.id === category)?.name;
+  updateTransactionCategory(transaction: EditableTransaction, category: string | number) {
+    const numericId = typeof category === 'string' ? parseInt(category, 10) : category;
+    if (isNaN(numericId)) return;
+
+    transaction.category = numericId;
+    transaction.categoryName = this.availableCategories.find(c => c.id === numericId)?.name;
   }
 
-  removeCategoryAndReassign(categoryId: number) {
-    const category = this.availableCategories.find(c => c.id === categoryId);
+  removeCategoryAndReassign(categoryId: string | number) {
+    const numericCategoryId = typeof categoryId === 'string' ? parseInt(categoryId, 10) : categoryId;
+    if (isNaN(numericCategoryId)) return;
+
+    const category = this.availableCategories.find(c => c.id === numericCategoryId);
     if (category) {
       category.markedForDeletion = true;
     }
 
-    this.newCategories = this.newCategories.filter(c => c.id !== categoryId);
+    this.newCategories = this.newCategories.filter(c => c.id !== numericCategoryId);
 
     const firstAvailableCategory = this.availableCategories.find(c => !c.markedForDeletion);
     
     if (firstAvailableCategory) {
       this.editableTransactions.forEach(transaction => {
-        if (transaction.category === categoryId) {
+        if (transaction.category === numericCategoryId) {
           transaction.category = firstAvailableCategory.id;
           transaction.categoryName = firstAvailableCategory.name;
         }
