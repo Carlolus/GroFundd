@@ -44,7 +44,7 @@ export class TransactionService {
 
     return this.transactionRepo.find({
       where: { user: { id: userId } },
-      relations: ['user'],
+      relations: ['user', 'category'],
     });
   }
   

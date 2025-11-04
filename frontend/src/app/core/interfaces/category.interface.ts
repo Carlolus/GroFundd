@@ -2,9 +2,9 @@ import { User } from './user.interface';
 
 export interface Category {
   id: string;
-  user: User;
+  user: string;
   name: string;
-  icon?: string;
+  icon: string | null;
   isAiGenerated: boolean;
-  createdAt: Date;
+  createdAt: string;
 }

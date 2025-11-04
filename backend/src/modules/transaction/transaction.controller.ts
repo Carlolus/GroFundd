@@ -41,7 +41,7 @@ export class TransactionController {
 
   @Post('bulk')
     @ApiBody({ type: [CreateTransactionDto] })
-    @ApiResponse({ status: 201, description: 'Categories created successfully.', type: [Transaction] })
+    @ApiResponse({ status: 201, description: 'Transactions created successfully.', type: [Transaction] })
     @ApiResponse({ status: 404, description: 'User not found.' })
     createBulk(@Body() dtos: CreateTransactionDto[], @Request() req): Promise<Transaction[]> {
       const dtosWithUser = dtos.map(dto => ({ ...dto, userId: req.user.id }));

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import { TransactionService } from '../../../core/services/transaction.service';
 
 interface Category {
   id: string;
@@ -11,12 +12,14 @@ interface Category {
 
 interface Transaction {
   id?: string;
-  category?: Category;
+  user?: any;
+  category?: Category; // ✅ ahora es un objeto, no string
   type: 'income' | 'expense';
   amount: number;
   description?: string;
   aiCategorySuggestion?: string;
   date: string;
+  createdAt?: string;
 }
 
 @Component({
@@ -27,13 +30,25 @@ interface Transaction {
   styleUrls: ['./transactions-view.scss'],
 })
 export class TransactionsView {
+  existingTransactions: Transaction[] = [];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private transactionService: TransactionService
   ) {}
   
   searchTerm = '';
   openMenuId: string | null = null;
+
+  async ngOnInit() {
+    try {
+      this.transactions = await this.transactionService.getTransactions().toPromise() || [];
+      console.log("Transacciones existentes:", this.transactions)
+    } catch (error) {
+      console.error('Error cargando categorías existentes:', error);
+      this.transactions = [];
+    }
+  }
 
   goToNewTransaction() {
     this.router.navigate(['dashboard/transactions/new']);
@@ -41,32 +56,6 @@ export class TransactionsView {
 
   // Sample data - replace with your actual data
   transactions: Transaction[] = [
-    {
-      id: '1',
-      category: { id: '1', name: 'Salario' },
-      type: 'income',
-      amount: 3500000,
-      description: 'Salario mensual',
-      aiCategorySuggestion: 'Ingresos',
-      date: '2024-11-01'
-    },
-    {
-      id: '2',
-      category: { id: '2', name: 'Alimentación' },
-      type: 'expense',
-      amount: 250000,
-      description: 'Supermercado de la semana',
-      date: '2024-11-02'
-    },
-    {
-      id: '3',
-      category: { id: '3', name: 'Transporte' },
-      type: 'expense',
-      amount: 150000,
-      description: 'Gasolina y peajes',
-      aiCategorySuggestion: 'Transporte',
-      date: '2024-11-03'
-    }
   ];
 
   trackByTransactionId(index: number, transaction: Transaction): string {

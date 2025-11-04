@@ -47,7 +47,7 @@ Your task is to:
 
 \`\`\`json
 {
-  "id": "generated-uuid",
+  "id": "generated-uuid", (BE SURE OF CREATE A CORRECT UUID)
   "user": "${user}",
   "name": "category-name",
   "icon": "icon-name-or-null",
@@ -65,7 +65,7 @@ Each transaction must follow this format, you should be aware of the current dat
 \`\`\`json
 {
   "user": "${user}",
-  "categoryId": "uuid-of-existing-or-new-category",
+  "category": "uuid-of-existing-or-new-category",
   "type": "income" | "expense",
   "amount": number,
   "description": "short description of the movement",
@@ -95,7 +95,7 @@ Your output **must be a single valid JSON** with this structure:
   "transactions": [
     {
       "user": "${user}",
-      "categoryId": "uuid",
+      "category": "uuid",
       "type": "income" | "expense",
       "amount": number,
       "description": "text",

@@ -34,5 +34,5 @@ export class ParsedTransactionDto {
   @ApiProperty({ example: 'c0b1c8f1-6ad2-4a63-8ffb-bf72c7d1c00e', required: false })
   @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  category?: string;
 }

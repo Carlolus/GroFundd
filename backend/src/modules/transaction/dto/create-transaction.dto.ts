@@ -21,9 +21,8 @@ export class CreateTransactionDto {
     description: 'Category unique identifier (UUID)',
     example: '4b32dc1a-85cf-48b3-82fa-90c4ecaf3e2a',
   })
-  @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  categoryId: string;
 
   @ApiProperty({
     description: 'Transaction type',
