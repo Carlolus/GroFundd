@@ -16,6 +16,7 @@ export class CreateCategorieDto {
     example: '7a82f0c9-2a73-4d91-9cf3-c7cc2c9357e3',
   })
   @IsUUID()
+  @IsOptional()
   userId: string;
 
   @ApiProperty({
