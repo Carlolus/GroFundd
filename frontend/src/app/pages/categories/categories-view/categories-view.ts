@@ -25,13 +25,20 @@ export class CategoriesView {
     private categoryService: CategoryService
   ) {}
 
+  loadCategories() {
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data || [];
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.categories = [];
+      }
+    });
+  }
+
   async ngOnInit() {
-    try {
-      this.categories = await this.categoryService.getCategories().toPromise() || [];
-    } catch (error) {
-      console.error('Error loading categories:', error);
-      this.categories = [];
-    }
+    await this.loadCategories();
   }
 
   goToNewCategory() {
@@ -70,7 +77,15 @@ export class CategoriesView {
   onDelete(category: Category) {
     console.log('Delete:', category);
     this.openMenuId = null;
-    // Implement your delete logic here
+    this.categoryService.deleteCategory(category.id).subscribe({
+      next: () =>
+        {
+          this.openStatusModal('success', 'Categoria eliminada correctamente');
+          this.loadCategories();
+        },
+      error: () =>
+        this.openStatusModal('error', 'Error al eliminar la categoria, por favor elimina los datos relacionados primero.')
+    });
   }
 
   // Create modal
@@ -85,11 +100,15 @@ export class CategoriesView {
   onModalSaved(success: boolean) {
     this.showModal = false;
     if (success) {
-      this.openStatusModal('success', 'Categoría creada correctamente');
+      this.loadCategories();
+      this.openStatusModal('success', 'Categoría creadaaa correctamente');
     } else {
       this.openStatusModal('error', 'Error al crear la categoría');
     }
   }
+
+
+  
 
   // Status Modal
 

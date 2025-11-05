@@ -20,7 +20,6 @@ export class CategoryService {
   }
 
   createCategory(category: Category) {
-    console.log('Llega a servicio:', category);
     this.http.post<Category>(`${this.apiUrl}`, category)
       .subscribe({
         next: res => console.log('Creado:', res),
@@ -28,7 +27,7 @@ export class CategoryService {
       });
   }
 
-  async deleteCategory(id: number){
+  deleteCategory(id: number) {
     return this.http.delete<Category>(`${this.apiUrl}/${id}`);
   }
 
