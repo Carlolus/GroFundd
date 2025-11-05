@@ -29,12 +29,6 @@ export class CreateCategorieDto {
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Icon name or path associated with the category',
-    example: 'mdi-heart',
-    maxLength: 50,
-  })
-
-  @ApiPropertyOptional({
     description: 'Flag indicating whether the category was AI-generated',
     example: true,
   })
