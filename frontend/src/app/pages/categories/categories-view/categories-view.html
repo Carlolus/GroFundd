@@ -28,7 +28,6 @@
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Icono</th>
           <th>Generada por IA</th>
           <th>Fecha de Creación</th>
           <th></th>
@@ -38,10 +37,6 @@
         <tr *ngFor="let category of categories; trackBy: trackByCategoryId">
           <td>
             <span class="category">{{ category.name }}</span>
-          </td>
-          <td>
-            <!-- You can add logic to display an icon here -->
-            <span class="icon">-</span>
           </td>
           <td>
             <span class="ai-generated" [class.yes]="category.isAiGenerated" [class.no]="!category.isAiGenerated">
