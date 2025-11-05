@@ -14,7 +14,7 @@
       >
     </div>
     
-    <button class="new-transaction-btn" (click)="goToNewCategory()">
+    <button class="new-transaction-btn" (click)="openModal('category')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
         <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
@@ -96,3 +96,17 @@
     </div>
   </div>
 </div>
+
+<app-modal-create
+  *ngIf="showModal"
+  [entityType]="currentEntity"
+  (saved)="onModalSaved($event)"
+  (closed)="showModal = false">
+</app-modal-create>
+
+<app-modal
+  *ngIf="showStatusModal()"
+  [type]="modalType()"
+  [message]="modalMessage()"
+  (close)="onModalClose()"
+></app-modal>

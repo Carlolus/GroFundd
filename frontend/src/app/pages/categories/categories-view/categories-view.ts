@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/interfaces/category.interface';
+import { ModalCreate } from '../../../shared/components/modals/modal-create/modal-create';
+import { ModalStatusComponent } from '../../../shared/components/modals/modal-status/modal-status.component';
 
 @Component({
   selector: 'app-categories-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ModalCreate, ModalStatusComponent],
   templateUrl: './categories-view.html',
   styleUrls: ['./categories-view.scss'],
 })
@@ -69,5 +71,39 @@ export class CategoriesView {
     console.log('Delete:', category);
     this.openMenuId = null;
     // Implement your delete logic here
+  }
+
+  // Create modal
+  showModal = false;
+  currentEntity: 'category' | 'budget' | 'insight' = 'category';
+
+  openModal(entity: 'category' | 'budget' | 'insight') {
+    this.currentEntity = entity;
+    this.showModal = true;
+  }
+
+  onModalSaved(success: boolean) {
+    this.showModal = false;
+    if (success) {
+      this.openStatusModal('success', 'Categoría creada correctamente');
+    } else {
+      this.openStatusModal('error', 'Error al crear la categoría');
+    }
+  }
+
+  // Status Modal
+
+  showStatusModal = signal(false);
+  modalType = signal<'success' | 'error'>('success');
+  modalMessage = signal('');
+
+  openStatusModal(type: 'success' | 'error', message: string): void {
+    this.modalType.set(type);
+    this.modalMessage.set(message);
+    this.showStatusModal.set(true);
+  }
+
+  onModalClose(): void {
+    this.showStatusModal.set(false);
   }
 }

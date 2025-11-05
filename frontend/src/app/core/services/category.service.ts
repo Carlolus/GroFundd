@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../interfaces/user.interface';
 import { UserService } from './user.service';
-import { tap } from 'rxjs/operators';
 import { Category } from '../interfaces/category.interface';
 import { firstValueFrom } from 'rxjs';
 
@@ -21,8 +19,24 @@ export class CategoryService {
     return this.http.get<Category[]>(`${this.apiUrl}`);
   }
 
+  createCategory(category: Category) {
+    console.log('Llega a servicio:', category);
+    this.http.post<Category>(`${this.apiUrl}`, category)
+      .subscribe({
+        next: res => console.log('Creado:', res),
+        error: err => console.error('Error:', err)
+      });
+  }
+
+  async deleteCategory(id: number){
+    return this.http.delete<Category>(`${this.apiUrl}/${id}`);
+  }
+
+  async updateCategory(id: number, updatedCategory: Category){
+    return this.http.patch<Category>(`${this.apiUrl}/${id}`, updatedCategory);
+  }
+
   async createManyCategories(categories: Category[]) {
-    console.log('Enviando a back:', categories);
     return await firstValueFrom(
       this.http.post<Category[]>(`${this.apiUrl}/bulk`, categories)
     );

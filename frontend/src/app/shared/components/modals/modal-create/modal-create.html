@@ -1,0 +1,25 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <header class="modal-header">
+      <h2>
+        {{
+            entityType === 'category' ? 'Categoría' :
+            entityType === 'budget' ? 'Producto' :
+            entityType === 'insight' ? 'Vista' :
+            ''
+        }}
+      </h2>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </header>
+
+    <section class="modal-body">
+      <ng-container [ngSwitch]="entityType">
+        <app-category-form
+          *ngSwitchCase="'category'"
+          (saved)="handleSave($event)">
+        </app-category-form>      
+      </ng-container>
+    </section>
+  </div>
+</div>
+

@@ -8,7 +8,6 @@ import { publicGuard } from './core/guards/public.guard';
 import { TransactionsView } from './pages/transactions/transactions-view/transactions-view';
 import { TransactionsNew } from './pages/transactions/transactions-new/transactions-new'; 
 import { CategoriesView } from './pages/categories/categories-view/categories-view';
-import { CategoriesNew } from './pages/categories/categories-new/categories-new';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -38,10 +37,6 @@ export const routes: Routes = [
       {
         path: 'categories',
         component: CategoriesView,
-      },
-      {
-        path: 'categories/new',
-        component: CategoriesNew,
       },
     ]
   },
