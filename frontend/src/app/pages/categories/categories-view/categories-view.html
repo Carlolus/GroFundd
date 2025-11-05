@@ -110,3 +110,9 @@
   [message]="modalMessage()"
   (close)="onModalClose()"
 ></app-modal>
+
+<app-modal-confirm
+  *ngIf="showConfirmModal()"
+  [message]="modalConfirmMessage()"
+  (confirm)="onConfirmDelete($event)">
+</app-modal-confirm>

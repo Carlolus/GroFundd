@@ -7,11 +7,12 @@ import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/interfaces/category.interface';
 import { ModalCreate } from '../../../shared/components/modals/modal-create/modal-create';
 import { ModalStatusComponent } from '../../../shared/components/modals/modal-status/modal-status.component';
+import { ModalConfirm } from '../../../shared/components/modals/modal-confirm/modal-confirm';
 
 @Component({
   selector: 'app-categories-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalCreate, ModalStatusComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ModalCreate, ModalStatusComponent, ModalConfirm],
   templateUrl: './categories-view.html',
   styleUrls: ['./categories-view.scss'],
 })
@@ -19,7 +20,6 @@ export class CategoriesView {
   categories: Category[] = [];
   searchTerm = '';
   openMenuId: number | null = null;
-
   constructor(
     private router: Router,
     private categoryService: CategoryService
@@ -75,28 +75,18 @@ export class CategoriesView {
   }
 
   onDelete(category: Category) {
-    console.log('Delete:', category);
     this.openMenuId = null;
-    this.categoryService.deleteCategory(category.id).subscribe({
-      next: () =>
-        {
-          this.openStatusModal('success', 'Categoria eliminada correctamente');
-          this.loadCategories();
-        },
-      error: () =>
-        this.openStatusModal('error', 'Error al eliminar la categoria, por favor elimina los datos relacionados primero.')
-    });
+    this.categoryToDelete = category;
+    this.openConfirmModal(`¿Seguro que deseas eliminar la categoría "${category.name}"?`);
   }
 
   // Create modal
   showModal = false;
   currentEntity: 'category' | 'budget' | 'insight' = 'category';
-
   openModal(entity: 'category' | 'budget' | 'insight') {
     this.currentEntity = entity;
     this.showModal = true;
   }
-
   onModalSaved(success: boolean) {
     this.showModal = false;
     if (success) {
@@ -106,23 +96,50 @@ export class CategoriesView {
       this.openStatusModal('error', 'Error al crear la categoría');
     }
   }
-
-
-  
-
   // Status Modal
-
   showStatusModal = signal(false);
   modalType = signal<'success' | 'error'>('success');
   modalMessage = signal('');
-
   openStatusModal(type: 'success' | 'error', message: string): void {
     this.modalType.set(type);
     this.modalMessage.set(message);
     this.showStatusModal.set(true);
   }
-
   onModalClose(): void {
     this.showStatusModal.set(false);
   }
+
+  // Confirm modal
+  showConfirmModal = signal(false);
+  modalConfirmMessage = signal('');
+  categoryToDelete?: Category;
+  openConfirmModal(message: string): void {
+    this.modalConfirmMessage.set(message);
+    this.showConfirmModal.set(true);
+  }
+
+  onModalConfirmClose(): void {
+    this.showConfirmModal.set(false);
+  }
+
+  onConfirmDelete(accepted: boolean) {
+    this.showConfirmModal.set(false);
+    if (accepted && this.categoryToDelete) {
+      this.categoryService.deleteCategory(this.categoryToDelete.id).subscribe({
+        next: () => {
+          this.openStatusModal('success', 'Categoría eliminada correctamente');
+          this.loadCategories();
+        },
+        error: () => {
+          this.openStatusModal(
+            'error',
+            'Error al eliminar la categoría, por favor elimina los datos relacionados primero.'
+          );
+        },
+      });
+    }
+
+    this.categoryToDelete = undefined;
+  }
+
 }

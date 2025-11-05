@@ -1,1 +1,22 @@
-<p>modal-confirm works!</p>
+<div class="confirm-modal-overlay">
+  <div class="confirm-modal">
+    <button class="confirm-modal__close" (click)="onCancel()">×</button>
+
+    <div class="confirm-modal__icon">
+      <img src="assets/icons/warning.png.png"/>
+    </div>
+
+    <div class="confirm-modal__image">
+      <img [src]="imageSrc" alt="confirm image" />
+    </div>
+
+    <div class="confirm-modal__message">
+      <p>{{ message }}</p>
+    </div>
+
+    <div class="confirm-modal__actions">
+      <button class="confirm-modal__button cancel" (click)="onCancel()">Cancelar</button>
+      <button class="confirm-modal__button accept" (click)="onAccept()">Aceptar</button>
+    </div>
+  </div>
+</div>
