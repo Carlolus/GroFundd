@@ -33,10 +33,6 @@ export class CreateCategorieDto {
     example: 'mdi-heart',
     maxLength: 50,
   })
-  @IsOptional()
-  @IsString()
-  @Length(0, 50)
-  icon?: string;
 
   @ApiPropertyOptional({
     description: 'Flag indicating whether the category was AI-generated',

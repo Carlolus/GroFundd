@@ -34,7 +34,6 @@ export class CategorieService {
     const category = this.categoryRepo.create({
       id: newId,
       name: dto.name,
-      icon: dto.icon,
       isAiGenerated: dto.isAiGenerated,
       user,
     });
@@ -58,7 +57,6 @@ export class CategorieService {
     }
 
     if (dto.name !== undefined) category.name = dto.name;
-    if (dto.icon !== undefined) category.icon = dto.icon;
     if (dto.isAiGenerated !== undefined) category.isAiGenerated = dto.isAiGenerated;
 
     return this.categoryRepo.save(category);

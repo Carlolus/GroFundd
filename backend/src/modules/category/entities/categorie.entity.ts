@@ -13,9 +13,6 @@ export class Category {
   @Column({ length: 100 })
   name: string;
 
-  @Column({ length: 50, nullable: true })
-  icon?: string;
-
   @Column({ default: false })
   isAiGenerated: boolean;
 
