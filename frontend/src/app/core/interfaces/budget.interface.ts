@@ -1,13 +1,33 @@
-import { User } from './user.interface';
-import { Category } from './category.interface';
-
 export interface Budget {
   id: string;
-  user: User;
-  category: Category;
+  user_id: string;
+  category_id: number;
+  category_name: string;
   month: number;
   year: number;
   limit_amount: number;
-  ai_suggested: boolean;
   created_at: Date;
+}
+
+export interface CreateBudget {
+  user_id: string;
+  category_id: number;
+  month: number;
+  year: number;
+  limit_amount: number;
+}
+
+export interface CreateBudget {
+  user_id: string;
+  category_id: number;
+  month: number;
+  year: number;
+  limit_amount: number;
+}
+
+export interface UpdateBudget {
+  category_id?: number;
+  month?: number;
+  year?: number;
+  limit_amount?: number;
 }

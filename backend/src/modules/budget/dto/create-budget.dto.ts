@@ -19,7 +19,7 @@ export class CreateBudgetDto {
 
   @ApiProperty({
     description: 'ID of the category associated with this budget.',
-    example: 'a9f2a70d-23b1-4c4b-bb6b-3921c872f3e4',
+    example: '2',
   })
   @IsNumber()
   category_id: number;
@@ -50,12 +50,4 @@ export class CreateBudgetDto {
   })
   @IsNumber({ maxDecimalPlaces: 2 })
   limit_amount: number;
-
-  @ApiPropertyOptional({
-    description: 'Whether this budget was suggested by AI.',
-    example: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  ai_suggested?: boolean;
 }

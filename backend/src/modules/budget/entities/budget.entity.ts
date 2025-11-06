@@ -7,11 +7,11 @@ export class Budget {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, { nullable: false, eager: false })
+  @JoinColumn({ name: 'user_id' }) 
   user: User;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => Category, { nullable: false, eager: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
@@ -23,9 +23,6 @@ export class Budget {
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   limit_amount: number;
-
-  @Column({ type: 'boolean', default: false })
-  ai_suggested: boolean;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

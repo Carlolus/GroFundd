@@ -2,10 +2,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CategoryForm } from './forms/category/category-form';
 import { TransactionForm } from './forms/transaction/transaction-form';
+import { BudgetForm } from './forms/budget/budget-form';
 
 @Component({
   selector: 'app-modal-create',
-  imports: [CommonModule, CategoryForm, TransactionForm],
+  imports: [CommonModule, CategoryForm, TransactionForm, BudgetForm],
   standalone: true,
   templateUrl: './modal-create.html',
   styleUrl: './modal-create.scss'

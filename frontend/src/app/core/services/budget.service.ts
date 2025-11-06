@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Budget } from '../interfaces/budget.interface';
+import { Budget, CreateBudget, UpdateBudget } from '../interfaces/budget.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +16,12 @@ export class BudgetService {
     return this.http.get<Budget[]>(`${this.apiUrl}`);
   }
 
-  createBudget(budget: Budget){
+  createBudget(budget: CreateBudget){
     return this.http.post<Budget>(`${this.apiUrl}`,budget);
   }
 
-  updateBudget(id: string, updatedBudget: Budget){
-    return this.http.put<Budget>(`${this.apiUrl}/${id}`,updatedBudget);
+  updateBudget(id: string, updatedBudget: UpdateBudget){
+    return this.http.patch<Budget>(`${this.apiUrl}/${id}`,updatedBudget);
   }
 
   deleteBudget(id: string){

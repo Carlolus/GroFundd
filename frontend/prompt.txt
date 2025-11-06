@@ -1,4 +1,4 @@
-Necesito que revises el modulo pages/categories/categories-view/ 
+Necesito que revises el modulo pages/categories/categories-view/
 Necesito generar la misma estructura de componente tabla + modals, para la siguiente entidad:
 
 interface:

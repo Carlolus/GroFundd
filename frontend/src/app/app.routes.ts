@@ -38,6 +38,10 @@ export const routes: Routes = [
         path: 'categories',
         component: CategoriesView,
       },
+      {
+        path: 'budgets',
+        loadComponent: () => import('./pages/budgets/budgets-view/budgets-view').then(m => m.BudgetsView),
+      },
     ]
   },
   { path: '**', redirectTo: 'landing' }

@@ -45,7 +45,7 @@ export class BudgetController {
         summary: 'Basic Budget Example',
         value: {
           user_id: 'e2b3b90d-5d3a-4a67-a5af-8a2c56f5b872',
-          category_id: 'a9f2a70d-23b1-4c4b-bb6b-3921c872f3e4',
+          category_id: 3,
           month: 10,
           year: 2025,
           limit_amount: 500.0,
@@ -55,6 +55,7 @@ export class BudgetController {
     },
   })
   create(@Body() dto: CreateBudgetDto): Promise<Budget> {
+    console.log("Llega a back; ",dto)
     return this.budgetService.create(dto);
   }
 

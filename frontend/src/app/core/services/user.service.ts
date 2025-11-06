@@ -21,6 +21,15 @@ export class UserService {
     return this.currentUser;
   }
 
+  getCurrentUserUUID(): string {
+    if (this.currentUser) return this.currentUser.id;
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      this.currentUser = JSON.parse(storedUser) as User;
+    }
+    return this.currentUser?.id || "nan";
+  }
+
   updateUser(userData: User) {
     return this.http.patch<User>(`${this.apiUrl}/${userData.id}`, userData).pipe(
       tap(updatedUser => {
