@@ -4,10 +4,10 @@
       <h2>
         {{ isEditMode ? 'Editar' : 'Crear' }}
         {{
-            entityType === 'category' ? 'Categoría' :
-            entityType === 'budget' ? 'Producto' :
+            entityType === 'category' ? 'tategoría' :
+            entityType === 'budget' ? 'presupuesto' :
             entityType === 'insight' ? 'Vista' :
-            entityType === 'transaction' ? 'Trasacción' :
+            entityType === 'transaction' ? 'transacción' :
             ''
         }}
       </h2>
@@ -21,7 +21,14 @@
           [isEditMode]="isEditMode"
           [initialData]="initialData"
           (saved)="handleSave($event)">
-        </app-category-form>      
+        </app-category-form>
+        
+        <app-transaction-form
+          *ngSwitchCase="'transaction'"
+          [isEditMode]="isEditMode"
+          [initialData]="initialData"
+          (saved)="handleSave($event)">
+        </app-transaction-form>    
       </ng-container>
     </section>
   </div>

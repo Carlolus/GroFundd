@@ -120,3 +120,29 @@
         </div>
       </div>
     </div>
+
+<app-modal-create
+  *ngIf="showModal"
+  [entityType]="currentEntity"
+  [isEditMode]="isEditMode"
+  [initialData]="editingEntity"
+  (saved)="onModalSaved($event)"
+  (closed)="showModal = false">
+</app-modal-create>
+
+<app-modal
+  *ngIf="showStatusModal()"
+  [type]="modalType()"
+  [message]="modalMessage()"
+  (close)="onModalClose()"
+></app-modal>
+
+<app-modal-confirm
+  *ngIf="showConfirmModal()"
+  [message]="modalConfirmMessage()"
+  (confirm)="onConfirmDelete($event)">
+</app-modal-confirm>
+
+
+
+

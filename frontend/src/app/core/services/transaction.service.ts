@@ -15,7 +15,19 @@ export class TransactionService {
 
   getTransactions(){
     console.log("Transacciones desde back:", this.http.get<Transaction[]>(`${this.apiUrl}`));
-    return this.http.get<any[]>(`${this.apiUrl}`);
+    return this.http.get<any>(`${this.apiUrl}`);
+  }
+
+  createTransaction(transaction: Transaction){
+    return this.http.post<Transaction>(`${this.apiUrl}`,transaction);
+  }
+
+  updateTransaction(id: string, updatedTransaction: Transaction){
+    return this.http.patch<Transaction>(`${this.apiUrl}/${id}`,updatedTransaction);
+  }
+
+  deleteTransaction(id: string){
+    return this.http.delete<Transaction>(`${this.apiUrl}/${id}`);
   }
 
   async createManyTransactions(transactions: Transaction[]){
