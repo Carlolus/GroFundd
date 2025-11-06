@@ -23,7 +23,9 @@ export class TransactionService {
   }
 
   updateTransaction(id: string, updatedTransaction: Transaction){
-    return this.http.patch<Transaction>(`${this.apiUrl}/${id}`,updatedTransaction);
+    console.log("ID:", id )
+    console.log("Tra:", updatedTransaction )
+    return this.http.put<Transaction>(`${this.apiUrl}/${id}`,updatedTransaction);
   }
 
   deleteTransaction(id: string){

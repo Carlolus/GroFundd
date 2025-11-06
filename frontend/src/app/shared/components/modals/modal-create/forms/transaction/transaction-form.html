@@ -1,0 +1,113 @@
+<form (ngSubmit)="onSubmit()" class="transaction-form">
+  <!-- Type Toggle (Radio Buttons styled as Pills) -->
+  <div class="form-group type-toggle-group">
+    <label class="group-label">Tipo de transacción</label>
+    <div class="type-toggle">
+      <label class="type-option" [class.active]="data.type === 'expense'">
+        <input 
+          type="radio" 
+          name="type" 
+          value="expense" 
+          [(ngModel)]="data.type"
+          required
+        />
+        <span class="type-label">Gasto</span>
+      </label>
+      <label class="type-option" [class.active]="data.type === 'income'">
+        <input 
+          type="radio" 
+          name="type" 
+          value="income" 
+          [(ngModel)]="data.type"
+          required
+        />
+        <span class="type-label">Ingreso</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Amount with Currency -->
+  <div class="form-group">
+    <label for="amount" class="input-label">
+      Monto
+    </label>
+    <div class="input-wrapper amount-input">
+      <input
+        type="number"
+        id="amount"
+        name="amount"
+        [(ngModel)]="data.amount"
+        placeholder="0.00"
+        step="0.01"
+        min="0"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Category with Icon -->
+  <div class="form-group">
+    <label for="category" class="input-label">
+      Categoría
+    </label>
+    <div class="input-wrapper">
+      <select id="category" name="category" [(ngModel)]="data.category" required>
+        <option [ngValue]="null" disabled>Selecciona una categoría</option>
+        <option *ngFor="let cat of categories" [ngValue]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Date with Icon -->
+  <div class="form-group">
+    <label for="date" class="input-label">
+      Fecha
+    </label>
+    <div class="input-wrapper">
+      <input
+        type="date"
+        id="date"
+        name="date"
+        [(ngModel)]="data.date"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Description with Character Count -->
+  <div class="form-group">
+    <label for="description" class="input-label">
+      Descripción
+      <span class="optional-badge">Opcional</span>
+    </label>
+    <div class="input-wrapper">
+      <textarea
+        id="description"
+        name="description"
+        [(ngModel)]="data.description"
+        rows="3"
+        placeholder="Agrega detalles adicionales sobre esta transacción..."
+        maxlength="200"
+      ></textarea>
+      <div class="char-count" *ngIf="data.description">
+        {{ data.description.length }}/200
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button with Loading State -->
+  <div class="form-actions">
+    <button type="submit" class="submit-btn" [disabled]="loading" [class.loading]="loading">
+      <span class="btn-content" *ngIf="!loading">
+        <span class="btn-icon">{{ isEditMode ? '✓' : '+' }}</span>
+        {{ isEditMode ? 'Actualizar' : 'Crear' }} Transacción
+      </span>
+      <span class="btn-content" *ngIf="loading">
+        <span class="spinner"></span>
+        Guardando...
+      </span>
+    </button>
+  </div>
+</form>

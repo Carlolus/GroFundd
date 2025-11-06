@@ -16,7 +16,7 @@
   background: #ffffff;
   border-radius: 12px;
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   animation: slideUp 0.25s ease-out;
@@ -91,7 +91,7 @@
 }
 
 // Responsivo
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .modal-container {
     width: 90%;
     max-width: none;
