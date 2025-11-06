@@ -20,25 +20,16 @@ export class CategoryService {
   }
 
   createCategory(category: Category) {
-    this.http.post<Category>(`${this.apiUrl}`, category)
-      .subscribe({
-        next: res => console.log('Creado:', res),
-        error: err => console.error('Error:', err)
-      });
+    return this.http.post<Category>(`${this.apiUrl}`, category);
   }
 
-  updateCategory(id: number, updatedCategory: Category){
-    return this.http.patch<Category>(`${this.apiUrl}/${id}`, updatedCategory).subscribe({
-      next: res => console.log('Actualizado:', res),
-      error: err => console.error('Error:', err)
-    });;
+  updateCategory(id: number, updatedCategory: Category) {
+    return this.http.patch<Category>(`${this.apiUrl}/${id}`, updatedCategory);
   }
 
   deleteCategory(id: number) {
     return this.http.delete<Category>(`${this.apiUrl}/${id}`);
   }
-
-  
 
   async createManyCategories(categories: Category[]) {
     return await firstValueFrom(
