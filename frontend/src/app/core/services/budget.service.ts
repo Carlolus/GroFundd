@@ -6,7 +6,7 @@ import { Budget } from '../interfaces/budget.interface';
   providedIn: 'root'
 })
 export class BudgetService {
-  private apiUrl = 'http://localhost:3000/budgets';
+  private apiUrl = 'http://localhost:3000/budget';
 
   constructor(
     private http: HttpClient,

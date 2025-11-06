@@ -1,94 +1,58 @@
-Necesito que revises el componente pages/transactions/transactions.view.
+Necesito que revises el modulo pages/categories/categories-view/ 
+Necesito generar la misma estructura de componente tabla + modals, para la siguiente entidad:
 
-Necesito que copies la estructura y diseño de la tabla pero ahora para la entidad categorias, esto es lo que devuelve 
-el servicio get categorias desde el backend:
-[
-  {
-    "id": 4,
-    "user": {
-      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
-      "email": "c@p.com",
-      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
-      "firstName": "Carlos",
-      "lastName": "Ponce",
-      "currency": "COP",
-      "createdAt": "2025-11-04T14:52:41.032Z",
-      "updatedAt": "2025-11-04T14:53:09.721Z"
-    },
-    "name": "Gimnasio",
-    "icon": null,
-    "isAiGenerated": true,
-    "createdAt": "2025-11-04T00:00:00.000Z"
-  },
-  {
-    "id": 5,
-    "user": {
-      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
-      "email": "c@p.com",
-      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
-      "firstName": "Carlos",
-      "lastName": "Ponce",
-      "currency": "COP",
-      "createdAt": "2025-11-04T14:52:41.032Z",
-      "updatedAt": "2025-11-04T14:53:09.721Z"
-    },
-    "name": "Ingresos por Proyectos",
-    "icon": null,
-    "isAiGenerated": true,
-    "createdAt": "2025-11-04T00:00:00.000Z"
-  },
-  {
-    "id": 1,
-    "user": {
-      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
-      "email": "c@p.com",
-      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
-      "firstName": "Carlos",
-      "lastName": "Ponce",
-      "currency": "COP",
-      "createdAt": "2025-11-04T14:52:41.032Z",
-      "updatedAt": "2025-11-04T14:53:09.721Z"
-    },
-    "name": "Comida",
-    "icon": null,
-    "isAiGenerated": true,
-    "createdAt": "2025-11-04T00:00:00.000Z"
-  },
-  {
-    "id": 2,
-    "user": {
-      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
-      "email": "c@p.com",
-      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
-      "firstName": "Carlos",
-      "lastName": "Ponce",
-      "currency": "COP",
-      "createdAt": "2025-11-04T14:52:41.032Z",
-      "updatedAt": "2025-11-04T14:53:09.721Z"
-    },
-    "name": "Transporte",
-    "icon": null,
-    "isAiGenerated": true,
-    "createdAt": "2025-11-04T00:00:00.000Z"
-  },
-  {
-    "id": 3,
-    "user": {
-      "id": "8b27c244-7dfe-4a79-8a65-9badc31f53f1",
-      "email": "c@p.com",
-      "passwordHash": "$2b$10$cFNpp2ic7HeCo5FiQ/OOpeOKzEwePPSW/5Zo1e4BxKoXruSv0NX0G",
-      "firstName": "Carlos",
-      "lastName": "Ponce",
-      "currency": "COP",
-      "createdAt": "2025-11-04T14:52:41.032Z",
-      "updatedAt": "2025-11-04T14:53:09.721Z"
-    },
-    "name": "Internet",
-    "icon": null,
-    "isAiGenerated": true,
-    "createdAt": "2025-11-04T00:00:00.000Z"
+interface:
+core/interfaces/budget.interface.ts
+
+import { User } from './user.interface';
+import { Category } from './category.interface';
+
+export interface Budget {
+  id: string;
+  user: User;
+  category: Category;
+  month: number;
+  year: number;
+  limit_amount: number;
+  ai_suggested: boolean;
+  created_at: Date;
+}
+
+
+Servicio: 
+
+core/services/budget.service.ts:
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Budget } from '../interfaces/budget.interface';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BudgetService {
+  private apiUrl = 'http://localhost:3000/budget';
+
+  constructor(
+    private http: HttpClient,
+  ) { }
+
+  getBudgets(){
+    return this.http.get<Budget[]>(`${this.apiUrl}`);
   }
-]
 
-El servicio que devuelve las categorias está ubicado en core/services/category.service.ts/getCategories(), quiero que el diseño sea similar,
-pero si ves necesario añadir mas carácteristicas, perfecto.
+  createBudget(budget: Budget){
+    return this.http.post<Budget>(`${this.apiUrl}`,budget);
+  }
+
+  updateBudget(id: string, updatedBudget: Budget){
+    return this.http.put<Budget>(`${this.apiUrl}/${id}`,updatedBudget);
+  }
+
+  deleteBudget(id: string){
+    return this.http.delete<Budget>(`${this.apiUrl}/${id}`);
+  }
+}
+
+
+Maneja estilos similares en la tabla para mantener continuidad.
