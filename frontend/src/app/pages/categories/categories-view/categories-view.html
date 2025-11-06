@@ -100,6 +100,8 @@
 <app-modal-create
   *ngIf="showModal"
   [entityType]="currentEntity"
+  [isEditMode]="isEditMode"
+  [initialData]="editingEntity"
   (saved)="onModalSaved($event)"
   (closed)="showModal = false">
 </app-modal-create>

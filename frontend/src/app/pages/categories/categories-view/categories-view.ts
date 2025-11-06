@@ -71,7 +71,7 @@ export class CategoriesView {
   onModify(category: Category) {
     console.log('Modify:', category);
     this.openMenuId = null;
-    // Implement your modify logic here
+    this.openEditModal("category",category);
   }
 
   onDelete(category: Category) {
@@ -83,17 +83,38 @@ export class CategoriesView {
   // Create modal
   showModal = false;
   currentEntity: 'category' | 'budget' | 'insight' = 'category';
+  editingEntity: any = null; // Para guardar la entidad a editar
+  isEditMode = false; // Para saber si estamos editando o creando
+
+  // Método para crear (mantener el actual)
   openModal(entity: 'category' | 'budget' | 'insight') {
     this.currentEntity = entity;
+    this.editingEntity = null;
+    this.isEditMode = false;
     this.showModal = true;
   }
+
+  // Nuevo método para editar
+  openEditModal(entity: 'category' | 'budget' | 'insight', data: any) {
+    this.currentEntity = entity;
+    this.editingEntity = data;
+    this.isEditMode = true;
+    this.showModal = true;
+  }
+
   onModalSaved(success: boolean) {
     this.showModal = false;
     if (success) {
       this.loadCategories();
-      this.openStatusModal('success', 'Categoría creadaaa correctamente');
+      const message = this.isEditMode 
+        ? 'Categoría actualizada correctamente' 
+        : 'Categoría creada correctamente';
+      this.openStatusModal('success', message);
     } else {
-      this.openStatusModal('error', 'Error al crear la categoría');
+      const message = this.isEditMode 
+        ? 'Error al actualizar la categoría' 
+        : 'Error al crear la categoría';
+      this.openStatusModal('error', message);
     }
   }
   // Status Modal

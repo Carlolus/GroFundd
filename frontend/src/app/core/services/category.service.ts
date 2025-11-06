@@ -27,13 +27,18 @@ export class CategoryService {
       });
   }
 
+  updateCategory(id: number, updatedCategory: Category){
+    return this.http.patch<Category>(`${this.apiUrl}/${id}`, updatedCategory).subscribe({
+      next: res => console.log('Actualizado:', res),
+      error: err => console.error('Error:', err)
+    });;
+  }
+
   deleteCategory(id: number) {
     return this.http.delete<Category>(`${this.apiUrl}/${id}`);
   }
 
-  async updateCategory(id: number, updatedCategory: Category){
-    return this.http.patch<Category>(`${this.apiUrl}/${id}`, updatedCategory);
-  }
+  
 
   async createManyCategories(categories: Category[]) {
     return await firstValueFrom(

@@ -8,7 +8,7 @@
     placeholder="Ej: Comida"
   />
   <button type="submit" [disabled]="loading || !data.name?.trim()">
-    <span *ngIf="!loading">Guardar</span>
-    <span *ngIf="loading">Guardando...</span>
+    <span *ngIf="!loading">{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+    <span *ngIf="loading">{{ isEditMode ? 'Actualizando...' : 'Guardando...' }}</span>
   </button>
 </form>

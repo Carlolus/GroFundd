@@ -2,10 +2,12 @@
   <div class="modal-container">
     <header class="modal-header">
       <h2>
+        {{ isEditMode ? 'Editar' : 'Crear' }}
         {{
             entityType === 'category' ? 'Categoría' :
             entityType === 'budget' ? 'Producto' :
             entityType === 'insight' ? 'Vista' :
+            entityType === 'transaction' ? 'Trasacción' :
             ''
         }}
       </h2>
@@ -16,10 +18,11 @@
       <ng-container [ngSwitch]="entityType">
         <app-category-form
           *ngSwitchCase="'category'"
+          [isEditMode]="isEditMode"
+          [initialData]="initialData"
           (saved)="handleSave($event)">
         </app-category-form>      
       </ng-container>
     </section>
   </div>
 </div>
-
