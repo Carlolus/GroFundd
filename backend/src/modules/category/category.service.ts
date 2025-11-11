@@ -17,6 +17,7 @@ export class CategorieService {
   ) {}
 
   async create(dto: CreateCategorieDto): Promise<Category> {
+    console.log("Intentando crear (1): ",dto)
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
     if (!user) {
       throw new NotFoundException(`User ${dto.userId} not found`);
@@ -31,12 +32,14 @@ export class CategorieService {
 
     console.log('ID:', newId);
 
-    const category = this.categoryRepo.create({
+    const category = await this.categoryRepo.create({
       id: newId,
       name: dto.name,
       isAiGenerated: dto.isAiGenerated,
       user,
     });
+
+    console.log("Intentando crear: ",category)
 
     return this.categoryRepo.save(category);
   }
@@ -80,5 +83,10 @@ export class CategorieService {
       where: { user: { id: userId } },
       relations: ['user'],
     });
+  }
+
+  async countCategories(): Promise<number> {
+    const quantity = await this.userRepo.count();
+    return quantity;
   }
 }

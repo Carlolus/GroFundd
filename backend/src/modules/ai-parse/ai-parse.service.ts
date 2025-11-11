@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Category } from '../category/entities/categorie.entity';
 import { GeminiService } from '../shared/gemini.service';
 import { UserService } from '../user/user.service';
+import { CategorieService } from '../category/category.service';
 
 @Injectable()
 export class AiParseService {
@@ -11,7 +12,8 @@ export class AiParseService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
     private readonly geminiService: GeminiService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly categoryService: CategorieService
   ) {}
 
   async parseText(text: string, userId: string): Promise<any> {
@@ -19,6 +21,8 @@ export class AiParseService {
       where: { user: { id: userId } },
       select: ['id', 'name'], // optional optimization
     });
+
+    const categoriesCount = await this.categoryService.countCategories();
 
     const user = await this.userService.findOne(userId);
 
@@ -30,7 +34,8 @@ export class AiParseService {
       text,
       userId,
       currency_t,
-      categoryList
+      categoryList,
+      categoriesCount
     );
     console.log(aiResult);
 

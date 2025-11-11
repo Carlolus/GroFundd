@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../../../../core/services/category.service';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
+import { UserService } from '../../../../../../core/services/user.service';
 
 @Component({
   selector: 'app-category-form',
@@ -19,7 +20,9 @@ export class CategoryForm implements OnInit {
   loading = false;
   data: any = { name: '', isAiGenerated: false };
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private userService: UserService) {}
 
   ngOnInit() {
     // Si estamos en modo edición, cargar los datos iniciales
@@ -39,8 +42,10 @@ export class CategoryForm implements OnInit {
           this.categoryService.updateCategory(this.data.id, this.data)
         );
       } else {
-        // Llamar al método de creación
-        await firstValueFrom(this.categoryService.createCategory(this.data));
+        const userId = await this.userService.getCurrentUserUUID();
+        this.data = { userId, ...this.data };
+        await firstValueFrom(
+          this.categoryService.createCategory(this.data));
       }
 
       this.saved.emit(true);

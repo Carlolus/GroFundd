@@ -20,7 +20,7 @@ export class GeminiService implements OnModuleInit {
     this.model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash'});
   }
 
-  async parseTransactionsFromText(text: string, user:string, currency: string, categories: string[]) {
+  async parseTransactionsFromText(text: string, user:string, currency: string, categories: string[], categoriesCount: number) {
 
     const today = new Date();
     const onlyDate = today.toISOString().split('T')[0]; // "2025-10-28"
@@ -34,6 +34,7 @@ You are a financial assistant specialized in analyzing natural language text.
 The user with UUID "${user}" with currency "${currency}" describes their day, mentioning possible incomes and expenses.  
 Your task is to:
 1. Identify all necessary **categories** (use existing ones when possible, or create new ones if they don’t match).
+1.2. Use "${categoriesCount+1}" as the next id, increment by 1 for each category.
 2. Identify all **transactions** (income or expense) mentioned in the text.
 3. Respond **only** with valid JSON — no explanations, no comments, no text outside the JSON object.
 
@@ -121,7 +122,6 @@ Respond **only** with the final JSON object.
     const responseText = result.response.text();
     console.log("Respuesta RAW de Gemini:", responseText)
 
-    // --- 🛠️ CORRECCIÓN CLAVE: Limpiar la respuesta ---
     let jsonString = responseText.trim();
     
     if (jsonString.startsWith('```json')) {
