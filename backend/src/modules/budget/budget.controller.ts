@@ -8,6 +8,7 @@ import {
   Delete,
   Request,
   UseGuards,
+  Query
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,6 +22,8 @@ import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { Budget } from './entities/budget.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { BudgetSummaryDto } from './dto/budget-summary.dto';
+import { UserBudgetsSummaryDto } from './dto/user-budgets-summary.dto';
 
 @ApiTags('Budgets')
 @ApiBearerAuth()
@@ -54,8 +57,7 @@ export class BudgetController {
       },
     },
   })
-  create(@Body() dto: CreateBudgetDto): Promise<Budget> {
-    console.log("Llega a back; ",dto)
+  async create(@Body() dto: CreateBudgetDto): Promise<Budget> {
     return this.budgetService.create(dto);
   }
 
@@ -64,7 +66,7 @@ export class BudgetController {
     status: 200,
     description: 'Returns all budgets belonging to the authenticated user.',
   })
-  findAll(@Request() req) {
+  async findAll(@Request() req) {
     return this.budgetService.findAllByUser(req.user.id);
   }
 
@@ -82,7 +84,7 @@ export class BudgetController {
     status: 404,
     description: 'Budget not found.',
   })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.budgetService.findOne(id);
   }
 
@@ -110,7 +112,7 @@ export class BudgetController {
       },
     },
   })
-  update(@Param('id') id: string, @Body() updateBudgetDto: UpdateBudgetDto) {
+  async update(@Param('id') id: string, @Body() updateBudgetDto: UpdateBudgetDto) {
     return this.budgetService.update(id, updateBudgetDto);
   }
 
@@ -127,7 +129,25 @@ export class BudgetController {
     status: 404,
     description: 'Budget not found.',
   })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.budgetService.remove(id);
+  }
+
+  @Get(':id/summary')
+  async getBudgetSummary(@Param('id') id: string): Promise<BudgetSummaryDto> {
+    return this.budgetService.getBudgetSummary(id);
+  }
+
+  @Get('user/:userId/summary')
+  async getUserBudgetsSummary(
+    @Param('userId') userId: string,
+    @Query('month') month?: number,
+    @Query('year') year?: number,
+  ): Promise<UserBudgetsSummaryDto> {
+    const now = new Date();
+    const currentMonth = month || now.getMonth() + 1;
+    const currentYear = year || now.getFullYear();
+
+    return this.budgetService.getUserBudgetsSummary(userId, currentMonth, currentYear);
   }
 }

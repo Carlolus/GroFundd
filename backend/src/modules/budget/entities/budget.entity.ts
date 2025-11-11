@@ -1,8 +1,12 @@
-import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Category } from '../../category/entities/categorie.entity';
 
 @Entity('budgets')
+@Entity('budgets')
+@Index('idx_budgets_unique', ['user', 'category', 'month', 'year'], { 
+  unique: true,
+})
 export class Budget {
   @PrimaryGeneratedColumn('uuid')
   id: string;
