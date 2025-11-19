@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Budget, CreateBudget, UpdateBudget } from '../interfaces/budget.interface';
+import { Budget, CreateBudget, UpdateBudget, BudgetDetail, BudgetsSummary } from '../interfaces/budget.interface';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class BudgetService {
 
   constructor(
     private http: HttpClient,
+    private userService: UserService
   ) { }
 
   getBudgets(){
@@ -26,5 +28,14 @@ export class BudgetService {
 
   deleteBudget(id: string){
     return this.http.delete<Budget>(`${this.apiUrl}/${id}`);
+  }
+
+  getBudgetReport(budgetId: string){
+    return this.http.get<BudgetDetail>(`${this.apiUrl}/${budgetId}/summary`);
+  }
+
+  getBudgetsSummary(){
+    const userId = this.userService.getCurrentUserUUID();
+    return this.http.get<BudgetsSummary>(`${this.apiUrl}/user/${userId}/summary`);
   }
 }

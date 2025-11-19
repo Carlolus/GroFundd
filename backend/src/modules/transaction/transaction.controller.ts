@@ -1,21 +1,24 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Delete, 
-  Param, 
-  Body, 
-  UseGuards, 
-  Request 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+  Request,
+  Query
 } from '@nestjs/common';
-import { 
-  ApiTags, 
-  ApiBearerAuth, 
-  ApiResponse, 
-  ApiParam, 
-  ApiBody 
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiParam,
+  ApiBody
 } from '@nestjs/swagger';
+
+import { ParseIntPipe } from '@nestjs/common';
 
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -28,7 +31,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(private readonly transactionService: TransactionService) { }
 
   @Post()
   @ApiBearerAuth()
@@ -40,12 +43,12 @@ export class TransactionController {
   }
 
   @Post('bulk')
-    @ApiBody({ type: [CreateTransactionDto] })
-    @ApiResponse({ status: 201, description: 'Transactions created successfully.', type: [Transaction] })
-    @ApiResponse({ status: 404, description: 'User not found.' })
-    createBulk(@Body() dtos: CreateTransactionDto[], @Request() req): Promise<Transaction[]> {
-      const dtosWithUser = dtos.map(dto => ({ ...dto, userId: req.user.id }));
-      return this.transactionService.createMany(dtosWithUser);
+  @ApiBody({ type: [CreateTransactionDto] })
+  @ApiResponse({ status: 201, description: 'Transactions created successfully.', type: [Transaction] })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  createBulk(@Body() dtos: CreateTransactionDto[], @Request() req): Promise<Transaction[]> {
+    const dtosWithUser = dtos.map(dto => ({ ...dto, userId: req.user.id }));
+    return this.transactionService.createMany(dtosWithUser);
   }
 
   @Get()
@@ -90,5 +93,34 @@ export class TransactionController {
   @ApiResponse({ status: 200, description: 'List all transactions for a specific user.', type: [Transaction] })
   findByUser(@Param('userId') userId: string): Promise<Transaction[]> {
     return this.transactionService.findByUser(userId);
+  }
+
+  @Get('list/quantity')
+  async getNTransactions(@Request() req, @Query('limit') limit?: string) {
+    const parsedLimit = Number(limit) || 11;
+    return this.transactionService.getNTransactions(req.user.id, parsedLimit);
+  }
+
+  @Get('user/income_expenses/:userId')
+  async getIncomeExpenses(
+    @Param('userId') userId: string,
+    @Query('month') month?: number,
+    @Query('year') year?: number
+  ) {
+    const currentDate = new Date();
+    const finalMonth = month || currentDate.getMonth() + 1;
+    const finalYear = year || currentDate.getFullYear();
+
+    return this.transactionService.getMonthIncomesExpenses(userId, finalYear, finalMonth);
+  }
+
+  // En tu transactions.controller.ts
+  @Get('user/expenses_by_category/:userId')
+  async getExpensesByCategory(
+    @Query('year', ParseIntPipe) year: number,
+    @Query('month', ParseIntPipe) month: number,
+    @Param('userId') userId: string,
+  ) {
+    return this.transactionService.getExpensesByCategory(userId, year, month);
   }
 }

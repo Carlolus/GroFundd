@@ -1,12 +1,22 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule, DecimalPipe, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
-import { AuthService } from '../../core/services/auth.service';
+import { BudgetService } from '../../core/services/budget.service';
+import { BudgetsSummary, BudgetItem } from '../../core/interfaces/budget.interface';
 import { User } from '../../core/interfaces/user.interface';
 import { UserService } from '../../core/services/user.service';
 import { CurrencyModalComponent } from '../../shared/components/modals/modal-currency/currency-modal.component';
 import { ModalStatusComponent } from '../../shared/components/modals/modal-status/modal-status.component';
+import { TransactionService } from '../../core/services/transaction.service';
+import { Transaction, IncomeVsExpense } from '../../core/interfaces/transaction.interface';
+import { forkJoin } from 'rxjs';
+
+interface ExpenseByCategory {
+  category_name: string;
+  total: number;
+  percentage: number;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -17,87 +27,197 @@ import { ModalStatusComponent } from '../../shared/components/modals/modal-statu
 })
 export class DashboardComponent implements OnInit {
   showCurrencyModal = false;
-  showSuccessModal = false;
-  user?: User;
-  username = this.user?.firstName;
   showModal = signal(false);
   modalType = signal<'success' | 'error'>('success');
   modalMessage = signal('');
   modalImage = signal('');
+
+  user?: User;
+  username = '';
   currency = '';
 
-  //Totales principales
-  balance = 4500000;
-  expenses = 1200000;
-  savings = 3300000;
+  budgetsSummary: BudgetsSummary | null = null;
+  last5transactions: Transaction[] = [];
+  currentMonthData: IncomeVsExpense | null = null;
+  previousMonthData: IncomeVsExpense | null = null;
+  expensesByCategory: ExpenseByCategory[] = [];
 
-  //Últimas transacciones
-  transactions = [
-    { date: '2025-10-25', description: 'Pago de nómina', amount: 1500000 },
-    { date: '2025-10-24', description: 'Compra de suministros', amount: -300000 },
-    { date: '2025-10-23', description: 'Transferencia recibida', amount: 800000 }
-  ];
+  balance = 0;
+  expenses = 0;
+  incomings = 0;
+  previousBalance = 0;
+  balanceChange = 0;
+  balanceChangePercent = 0;
 
-  //Grafico de barras gastos vs ahorros
-  barChartLabels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'];
-  barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: this.barChartLabels,
-    datasets: [
-      {
-        data: [400000, 600000, 550000, 700000, 800000, 900000],
-        label: 'Gastos',
-        backgroundColor: '#ef4444'
-      },
-      {
-        data: [300000, 400000, 500000, 600000, 700000, 750000],
-        label: 'Ahorros',
-        backgroundColor: '#22c55e'
-      }
-    ]
-  };
+  currentMonth = new Date().getMonth() + 1;
+  currentYear = new Date().getFullYear();
+  previousMonth = this.currentMonth === 1 ? 12 : this.currentMonth - 1;
+  previousYear = this.currentMonth === 1 ? this.currentYear - 1 : this.currentYear;
+
+  // Gráficos
+  barChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
-    plugins: {
-      legend: { position: 'bottom' },
-      title: { display: true, text: 'Gastos vs Ahorros Mensuales' }
+    maintainAspectRatio: false,
+    plugins: { 
+      legend: { position: 'bottom' }, 
+      title: { display: true, text: 'Gastos vs Ingresos - Comparativa Mensual', font: { size: 14 } } 
     }
   };
-  barChartType: 'bar' = 'bar'; // tipo explícito
+  barChartType: 'bar' = 'bar';
 
-  // Gráfico lineal — Evolución del Balance
-  lineChartLabels = ['Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre'];
-  lineChartData: ChartConfiguration<'line'>['data'] = {
-    labels: this.lineChartLabels,
-    datasets: [
-      {
-        data: [2800000, 3100000, 3500000, 4000000, 4500000],
-        label: 'Evolución del Balance',
-        fill: true,
-        borderColor: '#0ea5e9',
-        backgroundColor: 'rgba(14,165,233,0.2)',
-        tension: 0.4
-      }
-    ]
-  };
-  lineChartOptions: ChartConfiguration<'line'>['options'] = {
+  doughnutChartData: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [] };
+  doughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
-    plugins: {
-      legend: { position: 'bottom' },
-      title: { display: true, text: 'Balance General' }
+    maintainAspectRatio: false,
+    plugins: { 
+      legend: { position: 'right' }, 
+      title: { display: true, text: 'Presupuestos por Categoría', font: { size: 14 } } 
     }
   };
-  lineChartType: 'line' = 'line'; // tipo explícito
+  doughnutChartType: 'doughnut' = 'doughnut';
 
-  isSidebarCollapsed: boolean = false;
+  pieChartData: ChartConfiguration<'pie'>['data'] = { labels: [], datasets: [] };
+  pieChartOptions: ChartConfiguration<'pie'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { 
+      legend: { position: 'right' }, 
+      title: { display: true, text: 'Gastos por Categoría del Mes', font: { size: 14 } } 
+    }
+  };
+  pieChartType: 'pie' = 'pie';
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private budgetService: BudgetService,
+    private transactionService: TransactionService
+  ) {}
 
   ngOnInit(): void {
     this.user = this.userService.getCurrentUser();
-    this.username = this.user?.firstName;
-    if (this.user && this.user.currency == 'null') {
+    this.username = this.user?.firstName ?? 'Usuario';
+
+    if (this.user?.currency === 'null' || !this.user?.currency) {
       this.showCurrencyModal = true;
     }
+
+    this.loadDashboardData();
+  }
+
+  private loadDashboardData(): void {
+    this.budgetService.getBudgetsSummary().subscribe(data => {
+      this.budgetsSummary = data;
+      this.updateBudgetChart();
+    });
+
+    this.transactionService.getNTransactions('5').subscribe(data => {
+      this.last5transactions = data?.length ? data : [];
+    });
+
+    // Cargar gastos por categoría
+    this.transactionService.getExpensesByCategory(this.currentYear, this.currentMonth).subscribe(data => {
+      this.expensesByCategory = data || [];
+      this.updateExpensePieChart();
+    });
+
+    // Cargar datos del mes actual y anterior
+    forkJoin({
+      current: this.transactionService.getIncomedVsExpent(this.currentYear, this.currentMonth),
+      previous: this.transactionService.getIncomedVsExpent(this.previousYear, this.previousMonth)
+    }).subscribe(({ current, previous }) => {
+      this.currentMonthData = current;
+      this.previousMonthData = previous;
+
+      this.incomings = current?.income ?? 0;
+      this.expenses = current?.expense ?? 0;
+      this.balance = this.incomings - this.expenses;
+      this.previousBalance = (previous?.income ?? 0) - (previous?.expense ?? 0);
+      this.balanceChange = this.balance - this.previousBalance;
+      this.balanceChangePercent = this.previousBalance !== 0 
+        ? (this.balanceChange / Math.abs(this.previousBalance)) * 100 
+        : 0;
+
+      this.updateComparisonChart(current, previous);
+    });
+  }
+
+  private updateComparisonChart(current: IncomeVsExpense, previous: IncomeVsExpense): void {
+    const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    
+    this.barChartData = {
+      labels: [
+        monthNames[this.previousMonth - 1], 
+        monthNames[this.currentMonth - 1]
+      ],
+      datasets: [
+        { 
+          data: [previous?.expense ?? 0, current?.expense ?? 0], 
+          label: 'Gastos', 
+          backgroundColor: '#ef4444',
+          borderRadius: 6
+        },
+        { 
+          data: [previous?.income ?? 0, current?.income ?? 0], 
+          label: 'Ingresos', 
+          backgroundColor: '#22c55e',
+          borderRadius: 6
+        }
+      ]
+    };
+  }
+
+  private updateBudgetChart(): void {
+    if (!this.budgetsSummary?.budgets?.length) return;
+
+    const topBudgets = this.budgetsSummary.budgets.slice(0, 6);
+    
+    this.doughnutChartData = {
+      labels: topBudgets.map(b => b.category_name),
+      datasets: [{
+        data: topBudgets.map(b => b.spent),
+        backgroundColor: [
+          '#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'
+        ],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    };
+  }
+
+  private updateExpensePieChart(): void {
+    if (!this.expensesByCategory?.length) return;
+
+    const colors = [
+      '#ef4444', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981',
+      '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6',
+      '#a855f7', '#d946ef', '#ec4899', '#f43f5e'
+    ];
+
+    this.pieChartData = {
+      labels: this.expensesByCategory.map(e => e.category_name),
+      datasets: [{
+        data: this.expensesByCategory.map(e => e.total),
+        backgroundColor: colors.slice(0, this.expensesByCategory.length),
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    };
+  }
+
+  getBudgetStatusClass(status: string): string {
+    switch(status) {
+      case 'on_track': return 'status-good';
+      case 'warning': return 'status-warning';
+      case 'exceeded': return 'status-danger';
+      default: return '';
+    }
+  }
+
+  getProgressBarClass(percentage: number): string {
+    if (percentage >= 100) return 'progress-danger';
+    if (percentage >= 80) return 'progress-warning';
+    return 'progress-good';
   }
 
   onCurrencySelected(currency: string): void {
@@ -119,9 +239,5 @@ export class DashboardComponent implements OnInit {
 
   onModalClose(): void {
     this.showModal.set(false);
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }

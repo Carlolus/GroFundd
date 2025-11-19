@@ -86,7 +86,7 @@ export class CategorieService {
   }
 
   async countCategories(): Promise<number> {
-    const quantity = await this.userRepo.count();
+    const quantity = await this.categoryRepo.count();
     return quantity;
   }
 }

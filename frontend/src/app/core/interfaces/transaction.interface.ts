@@ -10,3 +10,17 @@ export interface Transaction {
   aiCategorySuggestion?: string;
   date: string;
 }
+
+export interface IncomeVsExpense {
+  year: number;
+  month: number;
+  income: number;
+  expense: number;
+  difference: number;
+}
+
+export interface ExpenseByCategory {
+  category_name: string;
+  total: number;
+  percentage: number;
+}

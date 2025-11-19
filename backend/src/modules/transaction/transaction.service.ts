@@ -6,6 +6,7 @@ import { User } from '../user/entities/user.entity';
 import { Category } from '../category/entities/categorie.entity'
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { IncomeVsExpense } from './dto/incomes-expenses.dto';
 
 @Injectable()
 export class TransactionService {
@@ -16,7 +17,7 @@ export class TransactionService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepo: Repository<Category>,
-  ) {}
+  ) { }
 
   async create(dto: CreateTransactionDto): Promise<Transaction> {
     const user = await this.userRepo.findOne({ where: { id: dto.userId } });
@@ -47,7 +48,7 @@ export class TransactionService {
       relations: ['user', 'category'],
     });
   }
-  
+
   async findOne(id: string): Promise<Transaction> {
     const transaction = await this.transactionRepo.findOne({ where: { id }, relations: ['user', 'category'] });
     if (!transaction) throw new NotFoundException(`Transaction ${id} not found`);
@@ -93,5 +94,74 @@ export class TransactionService {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`User ${userId} not found`);
     return this.transactionRepo.find({ where: { user }, relations: ['user', 'category'] });
+  }
+
+  async getNTransactions(userId: string, limit: number): Promise<Transaction[]> {
+    console.log("Lega")
+    console.log("UUID: ", userId)
+    console.log("Límite: ", limit)
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`User ${userId} not found`);
+    return this.transactionRepo.find({
+      where: { user: { id: userId } },
+      order: { date: 'DESC' },
+      take: limit,
+    });
+  }
+
+  async getMonthIncomesExpenses(userId: string, year: number, month: number): Promise<IncomeVsExpense> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    const result = await this.transactionRepo
+      .createQueryBuilder('transaction')
+      .select('transaction.type', 'type')
+      .addSelect('SUM(transaction.amount)', 'total')
+      .where('EXTRACT(YEAR FROM transaction.date) = :year', { year })
+      .andWhere('EXTRACT(MONTH FROM transaction.date) = :month', { month })
+      .andWhere('transaction.user_id = :userId', { userId: userId })
+      .groupBy('transaction.type')
+      .getRawMany();
+
+    const income = parseFloat(
+      result.find(r => r.type === 'income')?.total || '0'
+    );
+    const expense = parseFloat(
+      result.find(r => r.type === 'expense')?.total || '0'
+    );
+
+    const difference = income - expense;
+
+    return {
+      year,
+      month,
+      income,
+      expense,
+      difference,
+    };
+  }
+
+  async getExpensesByCategory(userId: string, year: number, month: number) {
+    const result = await this.transactionRepo
+      .createQueryBuilder('transaction')
+      .leftJoin('transaction.category', 'category')
+      .select('category.name', 'category_name')
+      .addSelect('SUM(transaction.amount)', 'total')
+      .where('EXTRACT(YEAR FROM transaction.date) = :year', { year })
+      .andWhere('EXTRACT(MONTH FROM transaction.date) = :month', { month })
+      .andWhere('transaction.user_id = :userId', { userId })
+      .andWhere('transaction.type = :type', { type: 'expense' })
+      .groupBy('category.name')
+      .orderBy('total', 'DESC')
+      .getRawMany();
+
+    const total = result.reduce((sum, item) => sum + parseFloat(item.total || '0'), 0);
+
+    return result.map(item => ({
+      category_name: item.category_name || 'Sin categoría',
+      total: parseFloat(item.total || '0'),
+      percentage: total > 0 ? (parseFloat(item.total || '0') / total) * 100 : 0
+    }));
   }
 }

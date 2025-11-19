@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from '../interfaces/transaction.interface';
+import { IncomeVsExpense, Transaction, ExpenseByCategory } from '../interfaces/transaction.interface';
 import { firstValueFrom } from 'rxjs';
+import { UserService } from './user.service';
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,32 +13,48 @@ export class TransactionService {
 
   constructor(
     private http: HttpClient,
+    private userService: UserService
   ) { }
 
-  getTransactions(){
-    console.log("Transacciones desde back:", this.http.get<Transaction[]>(`${this.apiUrl}`));
+  getTransactions() {
     return this.http.get<any>(`${this.apiUrl}`);
   }
 
-  createTransaction(transaction: Transaction){
-    return this.http.post<Transaction>(`${this.apiUrl}`,transaction);
+  getNTransactions(quantity: string) {
+    return this.http.get<Transaction[]>(`${this.apiUrl}/list/quantity`, { params: { limit: quantity } });
   }
 
-  updateTransaction(id: string, updatedTransaction: Transaction){
-    console.log("ID:", id )
-    console.log("Tra:", updatedTransaction )
-    return this.http.put<Transaction>(`${this.apiUrl}/${id}`,updatedTransaction);
+
+  getIncomedVsExpent(year: number, month: number) {
+    const userId = this.userService.getCurrentUserUUID()
+    return this.http.get<IncomeVsExpense>(`${this.apiUrl}/user/income_expenses/${userId}`, {
+        params: { year: year, month: month }
+      });
   }
 
-  deleteTransaction(id: string){
+  createTransaction(transaction: Transaction) {
+    return this.http.post<Transaction>(`${this.apiUrl}`, transaction);
+  }
+
+  updateTransaction(id: string, updatedTransaction: Transaction) {
+    return this.http.put<Transaction>(`${this.apiUrl}/${id}`, updatedTransaction);
+  }
+
+  deleteTransaction(id: string) {
     return this.http.delete<Transaction>(`${this.apiUrl}/${id}`);
   }
 
-  async createManyTransactions(transactions: Transaction[]){
-    console.log("Enviando a back:", transactions)
+  async createManyTransactions(transactions: Transaction[]) {
     return await firstValueFrom(
       this.http.post<Transaction[]>(`${this.apiUrl}/bulk`, transactions)
     );
   }
   
+  
+  getExpensesByCategory(year: number, month: number) {
+    const userId = this.userService.getCurrentUserUUID()
+    return this.http.get<ExpenseByCategory[]>(
+      `${this.apiUrl}/user/expenses_by_category/${userId}?year=${year}&month=${month}`
+    );
+  }
 }

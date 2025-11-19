@@ -25,6 +25,8 @@ export class GeminiService implements OnModuleInit {
     const today = new Date();
     const onlyDate = today.toISOString().split('T')[0]; // "2025-10-28"
     console.log("Moneda recibida:", currency)
+    console.log("Total categorias: ", categoriesCount)
+    const newId = categoriesCount + 2;
 
 
 const prompt = `
@@ -34,7 +36,7 @@ You are a financial assistant specialized in analyzing natural language text.
 The user with UUID "${user}" with currency "${currency}" describes their day, mentioning possible incomes and expenses.  
 Your task is to:
 1. Identify all necessary **categories** (use existing ones when possible, or create new ones if they don’t match).
-1.2. Use "${categoriesCount+1}" as the next id, increment by 1 for each category.
+1.2. Use "${newId}" as the next id, increment by 1 for each category.
 2. Identify all **transactions** (income or expense) mentioned in the text.
 3. Respond **only** with valid JSON — no explanations, no comments, no text outside the JSON object.
 

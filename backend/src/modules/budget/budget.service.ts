@@ -170,13 +170,15 @@ export class BudgetService {
       status = 'on_track';
     }
 
+    const limit_amount = budget.limit_amount;
+
     return {
       id: budget.id,
       category_id: budget.category.id,
       category_name: budget.category.name,
       month: budget.month,
       year: budget.year,
-      limit_amount: budget.limit_amount,
+      limit_amount: Number(limit_amount) || 0,
       spent,
       remaining,
       percentage: parseFloat(percentage.toFixed(2)),
@@ -235,14 +237,14 @@ export class BudgetService {
 
         const spent = parseFloat(result.total || '0');
         const transactionCount = parseInt(result.count || '0', 10);
-        const remaining = budget.limit_amount - spent;
-        const percentage = budget.limit_amount > 0 ? (spent / budget.limit_amount) * 100 : 0;
+        
+        const limitAmount = parseFloat(budget.limit_amount.toString());
+        const remaining = limitAmount - spent;
+        const percentage = limitAmount > 0 ? (spent / limitAmount) * 100 : 0;
 
-        // Calcular promedio diario y proyección
         const dailyAverage = daysPassed > 0 ? spent / daysPassed : 0;
         const projectedTotal = dailyAverage * daysInMonth;
 
-        // Determinar estado
         let status: 'on_track' | 'warning' | 'exceeded';
         if (percentage >= 100) {
           status = 'exceeded';
@@ -256,7 +258,7 @@ export class BudgetService {
           id: budget.id,
           category_id: budget.category.id,
           category_name: budget.category.name,
-          limit_amount: budget.limit_amount,
+          limit_amount: limitAmount, // 🔧 Ya como número
           spent: parseFloat(spent.toFixed(2)),
           remaining: parseFloat(remaining.toFixed(2)),
           percentage: parseFloat(percentage.toFixed(2)),
@@ -269,6 +271,7 @@ export class BudgetService {
     );
 
     // 4. Calcular totales generales
+    // 🔧 FIX: Ahora limit_amount ya es número
     const totalBudgeted = budgetItems.reduce((sum, b) => sum + b.limit_amount, 0);
     const totalSpent = budgetItems.reduce((sum, b) => sum + b.spent, 0);
     const totalRemaining = totalBudgeted - totalSpent;
@@ -311,10 +314,6 @@ export class BudgetService {
       'Noviembre',
       'Diciembre',
     ];
-    const totalBudgetedNum = Number(totalBudgeted) || 0;
-    const totalSpentNum = Number(totalSpent) || 0;
-    const totalRemainingNum = Number(totalRemaining) || 0;
-    const overallPercentageNum = Number(overallPercentage) || 0;
 
     return {
       period: {
@@ -330,10 +329,10 @@ export class BudgetService {
       },
       budgets: budgetItems,
       totals: {
-        total_budgeted: parseFloat(totalBudgetedNum.toFixed(2)),
-        total_spent: parseFloat(totalSpentNum.toFixed(2)),
-        total_remaining: parseFloat(totalRemainingNum.toFixed(2)),
-        overall_percentage: parseFloat(overallPercentageNum.toFixed(2)),
+        total_budgeted: parseFloat(totalBudgeted.toFixed(2)),
+        total_spent: parseFloat(totalSpent.toFixed(2)),
+        total_remaining: parseFloat(totalRemaining.toFixed(2)),
+        overall_percentage: parseFloat(overallPercentage.toFixed(2)),
         categories_on_track: categoriesOnTrack,
         categories_warning: categoriesWarning,
         categories_exceeded: categoriesExceeded,
