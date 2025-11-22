@@ -52,7 +52,7 @@
               </td>
               <td>
                 <span class="amount" [class.income-amount]="transaction.type === 'income'" [class.expense-amount]="transaction.type === 'expense'">
-                  {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount.toLocaleString('es-CO', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+                  {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency}}
                 </span>
               </td>
               <td>

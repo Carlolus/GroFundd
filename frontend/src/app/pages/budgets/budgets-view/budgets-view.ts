@@ -18,6 +18,10 @@ import { ModalConfirm } from '../../../shared/components/modals/modal-confirm/mo
 })
 export class BudgetsView {
   budgets: Budget[] = [];
+
+  months= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
   searchTerm = '';
   openMenuId: string | null = null;
   constructor(
@@ -41,6 +45,7 @@ export class BudgetsView {
   async ngOnInit() {
     await this.loadBudgets();
     console.log(this.budgets)
+    console.log(this.months.at(0))
   }
 
   goToNewBudget() {
