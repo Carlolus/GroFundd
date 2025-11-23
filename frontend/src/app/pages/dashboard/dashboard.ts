@@ -59,9 +59,9 @@ export class DashboardComponent implements OnInit {
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { 
-      legend: { position: 'bottom' }, 
-      title: { display: true, text: 'Gastos vs Ingresos - Comparativa Mensual', font: { size: 14 } } 
+    plugins: {
+      legend: { position: 'bottom' },
+      title: { display: true, text: 'Gastos vs Ingresos - Comparativa Mensual', font: { size: 14 } }
     }
   };
   barChartType: 'bar' = 'bar';
@@ -70,9 +70,9 @@ export class DashboardComponent implements OnInit {
   doughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { 
-      legend: { position: 'right' }, 
-      title: { display: true, text: 'Presupuestos por Categoría', font: { size: 14 } } 
+    plugins: {
+      legend: { position: 'right' },
+      title: { display: true, text: 'Presupuestos por Categoría', font: { size: 14 } }
     }
   };
   doughnutChartType: 'doughnut' = 'doughnut';
@@ -81,9 +81,9 @@ export class DashboardComponent implements OnInit {
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { 
-      legend: { position: 'right' }, 
-      title: { display: true, text: 'Gastos por Categoría del Mes', font: { size: 14 } } 
+    plugins: {
+      legend: { position: 'right' },
+      title: { display: true, text: 'Gastos por Categoría del Mes', font: { size: 14 } }
     }
   };
   pieChartType: 'pie' = 'pie';
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private budgetService: BudgetService,
     private transactionService: TransactionService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.userService.getCurrentUser();
@@ -134,8 +134,8 @@ export class DashboardComponent implements OnInit {
       this.balance = this.incomings - this.expenses;
       this.previousBalance = (previous?.income ?? 0) - (previous?.expense ?? 0);
       this.balanceChange = this.balance - this.previousBalance;
-      this.balanceChangePercent = this.previousBalance !== 0 
-        ? (this.balanceChange / Math.abs(this.previousBalance)) * 100 
+      this.balanceChangePercent = this.previousBalance !== 0
+        ? (this.balanceChange / Math.abs(this.previousBalance)) * 100
         : 0;
 
       this.updateComparisonChart(current, previous);
@@ -144,23 +144,23 @@ export class DashboardComponent implements OnInit {
 
   private updateComparisonChart(current: IncomeVsExpense, previous: IncomeVsExpense): void {
     const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-    
+
     this.barChartData = {
       labels: [
-        monthNames[this.previousMonth - 1], 
+        monthNames[this.previousMonth - 1],
         monthNames[this.currentMonth - 1]
       ],
       datasets: [
-        { 
-          data: [previous?.expense ?? 0, current?.expense ?? 0], 
-          label: 'Gastos', 
-          backgroundColor: '#ef4444',
+        {
+          data: [previous?.expense ?? 0, current?.expense ?? 0],
+          label: 'Gastos',
+          backgroundColor: '#913832ff',
           borderRadius: 6
         },
-        { 
-          data: [previous?.income ?? 0, current?.income ?? 0], 
-          label: 'Ingresos', 
-          backgroundColor: '#22c55e',
+        {
+          data: [previous?.income ?? 0, current?.income ?? 0],
+          label: 'Ingresos',
+          backgroundColor: '#41a767b2',
           borderRadius: 6
         }
       ]
@@ -171,7 +171,7 @@ export class DashboardComponent implements OnInit {
     if (!this.budgetsSummary?.budgets?.length) return;
 
     const topBudgets = this.budgetsSummary.budgets.slice(0, 6);
-    
+
     this.doughnutChartData = {
       labels: topBudgets.map(b => b.category_name),
       datasets: [{
@@ -206,7 +206,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getBudgetStatusClass(status: string): string {
-    switch(status) {
+    switch (status) {
       case 'on_track': return 'status-good';
       case 'warning': return 'status-warning';
       case 'exceeded': return 'status-danger';

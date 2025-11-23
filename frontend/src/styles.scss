@@ -1,39 +1,175 @@
-
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
-html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+// Fonts
+@import '@fontsource/unbounded/400.css';
+@import '@fontsource/unbounded/500.css';
+@import '@fontsource/unbounded/700.css';
+@import '@fontsource/dm-sans/400.css';
+@import '@fontsource/dm-sans/500.css';
+@import '@fontsource/dm-sans/700.css';
+
+// Define the "Midnight Mint" Palette
+$midnight-palette: (
+  50: #f0fdfa,
+  100: #ccfbf1,
+  200: #99f6e4,
+  300: #5eead4,
+  400: #2dd4bf,
+  500: #14b8a6,
+  // Primary Mint
+  600: #0d9488,
+  700: #0f766e,
+  800: #115e59,
+  900: #134e4a,
+  contrast: (50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #0f172a,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+$indigo-palette: (
+  50: #eef2ff,
+  100: #e0e7ff,
+  200: #c7d2fe,
+  300: #a5b4fc,
+  400: #818cf8,
+  // Secondary Indigo
+  500: #6366f1,
+  600: #4f46e5,
+  700: #4338ca,
+  800: #3730a3,
+  900: #312e81,
+  contrast: (50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+// Custom Dark Theme Configuration
+$my-primary: mat.m2-define-palette($midnight-palette, 500);
+$my-accent: mat.m2-define-palette($indigo-palette, 400);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$my-theme: mat.m2-define-dark-theme((color: (primary: $my-primary,
+        accent: $my-accent,
+        warn: $my-warn,
+      ),
+      typography: mat.m2-define-typography-config($font-family: '"DM Sans", sans-serif',
+        $headline-1: mat.m2-define-typography-level(112px, 112px, 300, $font-family: '"Unbounded", cursive'),
+        $headline-2: mat.m2-define-typography-level(56px, 56px, 400, $font-family: '"Unbounded", cursive'),
+        $headline-3: mat.m2-define-typography-level(45px, 48px, 400, $font-family: '"Unbounded", cursive'),
+        $headline-4: mat.m2-define-typography-level(34px, 40px, 400, $font-family: '"Unbounded", cursive'),
+        $headline-5: mat.m2-define-typography-level(24px, 32px, 400, $font-family: '"Unbounded", cursive'),
+        $headline-6: mat.m2-define-typography-level(20px, 32px, 500, $font-family: '"Unbounded", cursive'),
+      )));
+
+// Include Angular Material Theme
+@include mat.core();
+@include mat.all-component-themes($my-theme);
+
+:root {
+  // --- Design Tokens ---
+
+  // Colors
+  --color-bg-main: #0f172a; // Slate 900
+  --color-bg-secondary: #1e293b; // Slate 800
+  --color-bg-tertiary: #334155; // Slate 700
+
+  --color-primary: #14b8a6; // Mint 500
+  --color-primary-glow: rgba(20, 184, 166, 0.5);
+
+  --color-secondary: #818cf8; // Indigo 400
+  --color-secondary-glow: rgba(129, 140, 248, 0.5);
+
+  --color-text-main: #f8fafc; // Slate 50
+  --color-text-muted: #94a3b8; // Slate 400
+  --color-text-on-primary: #0f172a;
+
+  // Glassmorphism
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-blur: blur(12px);
+
+  // Spacing & Layout
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  // Typography
+  --font-display: 'Unbounded', cursive;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  overflow-x: hidden;
 }
-/* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// Utility Classes
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}

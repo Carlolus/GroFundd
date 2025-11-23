@@ -11,7 +11,7 @@ export class ModalConfirm {
   @Input() message = '¿Estás seguro de continuar?';
   @Output() confirm = new EventEmitter<boolean>();
 
-  imageSrc = 'assets/modal_confirm.png'; // misma imagen para todos los casos
+  imageSrc = 'assets/grof.png'; // misma imagen para todos los casos
 
   onAccept() {
     this.confirm.emit(true); // señal de aceptación

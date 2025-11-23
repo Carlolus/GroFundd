@@ -1,14 +1,12 @@
-<form (ngSubmit)="onSubmit()">
-  <label>Nombre de la categoría</label>
-  <input
-    [(ngModel)]="data.name"
-    name="name"
-    required
-    [disabled]="loading"
-    placeholder="Ej: Comida"
-  />
-  <button type="submit" [disabled]="loading || !data.name?.trim()">
-    <span *ngIf="!loading">{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-    <span *ngIf="loading">{{ isEditMode ? 'Actualizando...' : 'Guardando...' }}</span>
-  </button>
-</form>
+<div class="form-container">
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Nombre de la categoría</label>
+      <input [(ngModel)]="data.name" name="name" required [disabled]="loading" placeholder="Ej: Comida" />
+    </div>
+    <button type="submit" [disabled]="loading || !data.name?.trim()">
+      <span *ngIf="!loading">{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+      <span *ngIf="loading">{{ isEditMode ? 'Actualizando...' : 'Guardando...' }}</span>
+    </button>
+  </form>
+</div>

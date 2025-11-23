@@ -1,0 +1,35 @@
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-bg-main);
+}
+
+.layout-content {
+    display: flex;
+    flex: 1;
+    position: relative;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 0; // Sidebar is now overlay
+    width: 100%;
+    transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    padding-top: 0; // Navbar is sticky
+    min-height: calc(100vh - 64px);
+
+    &.sidebar-open {
+        margin-left: 0; // Content stays full width
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+
+        &.sidebar-open {
+            margin-left: 0; // Sidebar is overlay on mobile
+        }
+    }
+}

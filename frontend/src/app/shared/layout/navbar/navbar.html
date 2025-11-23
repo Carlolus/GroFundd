@@ -1,45 +1,46 @@
 <nav class="navbar">
     <div class="navbar-left">
-    <button class="menu-btn" (click)="toggleSidebar.emit()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-    </button>
-    
-    <div class="logo">
-        <span>GroFund</span>
-    </div>
+        <button class="menu-btn" (click)="toggleSidebar.emit()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </button>
+
+        <div class="logo">
+            <span>GroFund</span>
+        </div>
     </div>
 
     <div class="navbar-right">
-    <div class="user-menu">
-        <button class="user-avatar" (click)="showMenu = !showMenu">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="Usuario">
-        </button>
-        
-        <div class="dropdown-menu" *ngIf="showMenu">
-        <a href="#" class="menu-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
-            <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Mi perfil
-        </a>
-        <a href="#" class="menu-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 1v6m0 6v6M23 12h-6m-6 0H5" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Configuración
-        </a>
-        <hr>
-        <a href="#" class="menu-item" (click)="logout($event)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14l5-5-5-5m5 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Cerrar sesión
-        </a>
+        <div class="user-menu">
+            <button class="user-avatar" (click)="showMenu = !showMenu">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="Usuario">
+            </button>
+
+            <div class="dropdown-menu" *ngIf="showMenu">
+                <a routerLink="/dashboard/profile" class="menu-item" (click)="showMenu = false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
+                        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    Mi perfil
+                </a>
+                <a routerLink="/dashboard/settings" class="menu-item" (click)="showMenu = false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                        <path d="M12 1v6m0 6v6M23 12h-6m-6 0H5" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    Configuración
+                </a>
+                <hr>
+                <a href="#" class="menu-item" (click)="logout($event)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14l5-5-5-5m5 5H9" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    Cerrar sesión
+                </a>
+            </div>
         </div>
-    </div>
     </div>
 </nav>

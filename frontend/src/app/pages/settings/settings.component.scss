@@ -1,0 +1,172 @@
+.page-container {
+    padding: var(--space-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: var(--space-xl);
+
+    h1 {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        margin-bottom: var(--space-xs);
+        background: linear-gradient(135deg, #fff, #cbd5e1);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    p {
+        color: var(--color-text-muted);
+        font-size: 1.1rem;
+    }
+}
+
+.settings-grid {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: 800px;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+}
+
+.settings-card {
+    h3 {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        margin-bottom: var(--space-lg);
+        color: var(--color-primary);
+    }
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .setting-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .label {
+            font-weight: 500;
+            color: var(--color-text-main);
+        }
+
+        .description {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+    }
+}
+
+// Toggle Switch
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: .4s;
+        border-radius: 34px;
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+    }
+
+    input:checked+.slider {
+        background-color: var(--color-primary);
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(24px);
+    }
+}
+
+.glass-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-main);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    outline: none;
+    cursor: pointer;
+
+    option {
+        background: #1e293b;
+    }
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--color-text-main);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: var(--space-sm);
+    text-align: left;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        opacity: 0.7;
+    }
+
+    &.danger {
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.2);
+        background: rgba(239, 68, 68, 0.05);
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+    }
+}

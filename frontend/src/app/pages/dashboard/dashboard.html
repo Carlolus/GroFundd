@@ -17,7 +17,6 @@
   <!-- Tarjetas de resumen principales -->
   <section class="summary-cards">
     <div class="card balance">
-      <div class="card-icon">💰</div>
       <div class="card-content">
         <h2>Balance total</h2>
         <p class="value">{{ balance | currency:user?.currency:'symbol':'1.0-0' }}</p>
@@ -30,7 +29,6 @@
     </div>
 
     <div class="card expenses">
-      <div class="card-icon">📉</div>
       <div class="card-content">
         <h2>Gastos del mes</h2>
         <p class="value">{{ expenses | currency:user?.currency:'symbol':'1.0-0' }}</p>
@@ -41,7 +39,6 @@
     </div>
 
     <div class="card savings">
-      <div class="card-icon">📈</div>
       <div class="card-content">
         <h2>Ingresos del mes</h2>
         <p class="value">{{ incomings | currency:user?.currency:'symbol':'1.0-0' }}</p>
@@ -55,10 +52,9 @@
   <!-- Tarjetas de estado de presupuestos -->
   <section class="budget-status" *ngIf="budgetsSummary">
     <div class="status-header">
-      <h2>📊 Estado de Presupuestos</h2>
       <span class="period">{{ budgetsSummary.period.month_name }} {{ budgetsSummary.period.year }}</span>
     </div>
-    
+
     <div class="status-cards">
       <div class="status-card good">
         <div class="status-number">{{ budgetsSummary.totals.categories_on_track }}</div>
@@ -111,7 +107,7 @@
   <!-- Detalle de presupuestos -->
   <section class="budgets-detail" *ngIf="budgetsSummary?.budgets?.length">
     <div class="section-header">
-      <h2>💼 Detalle de Presupuestos</h2>
+      <h2>Detalle de Presupuestos</h2>
       <button class="btn small">Gestionar presupuestos</button>
     </div>
 
@@ -130,12 +126,11 @@
             <span class="limit">{{ budget.limit_amount | currency:user?.currency:'symbol':'1.0-0' }}</span>
           </div>
         </div>
-        
+
         <div class="budget-progress">
           <div class="progress-bar-container">
-            <div class="progress-bar-fill" 
-                 [ngClass]="getProgressBarClass(budget.percentage)"
-                 [style.width.%]="budget.percentage > 100 ? 100 : budget.percentage">
+            <div class="progress-bar-fill" [ngClass]="getProgressBarClass(budget.percentage)"
+              [style.width.%]="budget.percentage > 100 ? 100 : budget.percentage">
             </div>
           </div>
           <span class="percentage">{{ budget.percentage | number:'1.0-0' }}%</span>
@@ -149,11 +144,11 @@
             </span>
           </div>
           <div class="stat">
-            <span class="stat-label">Transacciones</span>
+            <span class="stat-label">Transacciones </span>
             <span class="stat-value">{{ budget.transaction_count }}</span>
           </div>
           <div class="stat">
-            <span class="stat-label">Promedio diario</span>
+            <span class="stat-label">Promedio diario </span>
             <span class="stat-value">{{ budget.daily_average | currency:user?.currency:'symbol':'1.0-0' }}</span>
           </div>
           <div class="stat">
@@ -170,7 +165,7 @@
   <!-- Tabla de transacciones -->
   <section class="transactions">
     <div class="transactions-header">
-      <h2>📝 Últimas transacciones</h2>
+      <h2>Últimas transacciones</h2>
       <button class="btn small">Ver todas</button>
     </div>
 

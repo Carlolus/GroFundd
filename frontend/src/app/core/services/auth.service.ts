@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { User } from '../interfaces/user.interface';
 
 export interface AuthResponse {
   user: any;
@@ -39,5 +40,19 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = localStorage.getItem('access_token');
     return !!token;
+  }
+
+  getUser(): any {
+    if (!this.currentUser) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        this.currentUser = JSON.parse(userStr);
+      }
+    }
+    return this.currentUser;
+  }
+
+  getUserTyped(): User {
+    return this.currentUser as User;
   }
 }

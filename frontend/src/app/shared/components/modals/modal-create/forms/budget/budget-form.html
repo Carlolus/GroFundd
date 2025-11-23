@@ -1,33 +1,29 @@
-<form (ngSubmit)="onSubmit()" class="form-container">
+<div class="form-container">
+  <form (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="category">Categoría</label>
-      <select 
-          id="category" 
-          name="category" 
-          [(ngModel)]="data.category" 
-          required
-      >
+      <select id="category" name="category" [(ngModel)]="data.category" required>
         <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
       </select>
     </div>
-  
+
     <div class="form-group">
       <label for="month">Mes</label>
       <input type="number" id="month" name="month" [(ngModel)]="data.month" required min="1" max="12">
     </div>
-  
+
     <div class="form-group">
       <label for="year">Año</label>
       <input type="number" id="year" name="year" [(ngModel)]="data.year" required>
     </div>
 
     <div class="form-group">
-        <label for="limit_amount">Límite</label>
-        <input type="number" id="limit_amount" name="limit_amount" [(ngModel)]="data.limit_amount" required>
+      <label for="limit_amount">Límite</label>
+      <input type="number" id="limit_amount" name="limit_amount" [(ngModel)]="data.limit_amount" required>
     </div>
-  
+
     <button type="submit" [disabled]="loading" class="submit-btn">
       {{ loading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
     </button>
   </form>
-  
+</div>

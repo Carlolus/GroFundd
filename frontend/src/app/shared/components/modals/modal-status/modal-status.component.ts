@@ -16,8 +16,8 @@ export class ModalStatusComponent {
   // Usamos un getter para determinar la imagen de la marmota dinámicamente
   get imageSrc(): string {
     const images = {
-      success: 'assets/modal_success.jpg',
-      error: 'assets/modal_error.jpg'
+      success: 'assets/grof.png',
+      error: 'assets/grof.png'
     };
     return images[this.type];
   }
