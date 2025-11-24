@@ -389,9 +389,9 @@
         -webkit-backdrop-filter: var(--glass-blur);
         border: 1px solid var(--glass-border);
         border-radius: var(--radius-lg);
-
         padding: 20px;
         transition: all 0.2s;
+        box-sizing: border-box;
 
         &:hover {
           box-shadow: var(--glass-shadow);
@@ -456,6 +456,7 @@
         .card-body {
           .form-group {
             margin-bottom: 16px;
+            width: 100%; // Ensure full width
 
             &:last-of-type {
               margin-bottom: 0;
@@ -472,6 +473,7 @@
             input,
             select {
               width: 100%;
+              box-sizing: border-box; // Include padding in width
               padding: 10px 12px;
               background: rgba(255, 255, 255, 0.05);
               border: 1px solid rgba(255, 255, 255, 0.1);
@@ -497,12 +499,14 @@
               position: relative;
               display: flex;
               align-items: center;
+              width: 100%; // Ensure full width
 
               .currency {
                 position: absolute;
                 left: 12px;
                 font-weight: 600;
                 color: var(--color-text-muted);
+                z-index: 1; // Ensure visibility
               }
 
               input {

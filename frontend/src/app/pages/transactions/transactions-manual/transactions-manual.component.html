@@ -1,0 +1,88 @@
+<div class="manual-mode-container">
+
+    <!-- Transactions Section -->
+    <div class="transactions-section-header">
+        <h3>Transacciones ({{ editableTransactions.length }})</h3>
+        <button class="add-btn" (click)="addManualTransaction()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Nueva Transacción
+        </button>
+    </div>
+
+    <div class="transactions-grid">
+        <div class="transaction-card" *ngFor="let transaction of editableTransactions; trackBy: trackByTransactionId"
+            [class.income-card]="transaction.type === 'income'" [class.expense-card]="transaction.type === 'expense'">
+            <div class="card-header">
+                <div class="type-selector">
+                    <button class="type-btn income" [class.active]="transaction.type === 'income'"
+                        (click)="transaction.type = 'income'">
+                        Ingreso
+                    </button>
+                    <button class="type-btn expense" [class.active]="transaction.type === 'expense'"
+                        (click)="transaction.type = 'expense'">
+                        Gasto
+                    </button>
+                </div>
+                <button class="remove-btn" (click)="removeTransaction(transaction.id)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Monto</label>
+                    <div class="amount-input">
+                        <span class="currency">$</span>
+                        <input type="number" [(ngModel)]="transaction.amount" min="0" step="1000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select [(ngModel)]="transaction.category">
+                        <option *ngFor="let category of availableCategories" [value]="category.id"
+                            [disabled]="category.markedForDeletion">
+                            {{ category.name }}
+                            <span *ngIf="category.isNew && !category.markedForDeletion">✨</span>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" [(ngModel)]="transaction.description"
+                        placeholder="Descripción de la transacción">
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" [(ngModel)]="transaction.date">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-footer" *ngIf="editableTransactions.length > 0">
+        <button class="cancel-btn" (click)="cancelEdit()" [disabled]="isProcessing">
+            Cancelar
+        </button>
+        <button class="save-btn" (click)="saveAllTransactions()" [disabled]="isProcessing">
+            <svg *ngIf="!isProcessing" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            <svg *ngIf="isProcessing" class="spinner" width="20" height="20" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none"
+                    stroke-linecap="round" />
+            </svg>
+            {{ isProcessing ? 'Guardando...' : 'Guardar Transacciones' }}
+        </button>
+    </div>
+</div>
+
+<app-modal *ngIf="showModal()" [type]="modalType()" [message]="modalMessage()" (close)="onModalClose()"></app-modal>

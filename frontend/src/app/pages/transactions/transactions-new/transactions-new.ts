@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CategoryService } from '../../../core/services/category.service';
 import { TransactionService } from '../../../core/services/transaction.service';
 import { ModalStatusComponent } from '../../../shared/components/modals/modal-status/modal-status.component';
+import { TransactionsManualComponent } from '../transactions-manual/transactions-manual.component';
 
 interface EditableTransaction extends ParsedTransaction {
   id: string; // Temporal ID for frontend management
@@ -20,7 +21,7 @@ interface EditableCategory extends Category {
 @Component({
   selector: 'app-transactions-new',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalStatusComponent],
+  imports: [CommonModule, FormsModule, ModalStatusComponent, TransactionsManualComponent],
   templateUrl: './transactions-new.html',
   styleUrls: ['./transactions-new.scss']
 })
@@ -31,7 +32,7 @@ export class TransactionsNew {
   modalType = signal<'success' | 'error'>('success');
   modalMessage = signal('');
   modalImage = signal('');
-  
+
   // Auto mode
   naturalLanguageInput = '';
   isProcessing = false;
@@ -55,7 +56,7 @@ export class TransactionsNew {
     private router: Router,
     private categoryService: CategoryService,
     private transactionService: TransactionService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     // Cargar categorías existentes al iniciar el componente
@@ -82,7 +83,7 @@ export class TransactionsNew {
 
     try {
       const response = await this.aiParseService.parseText(this.naturalLanguageInput).toPromise();
-      
+
       if (!response) {
         throw new Error('No se recibió respuesta del servidor');
       }
@@ -108,7 +109,7 @@ export class TransactionsNew {
         id: `temp-${Date.now()}-${index}`,
         categoryName: this.availableCategories.find(c => c.id === t.category)?.name
       }));
-      
+
       this.showResults = true;
     } catch (error: any) {
       console.error('Error processing transaction:', error);
@@ -143,7 +144,7 @@ export class TransactionsNew {
     this.newCategories = this.newCategories.filter(c => c.id !== numericCategoryId);
 
     const firstAvailableCategory = this.availableCategories.find(c => !c.markedForDeletion);
-    
+
     if (firstAvailableCategory) {
       this.editableTransactions.forEach(transaction => {
         if (transaction.category === numericCategoryId) {
@@ -156,7 +157,7 @@ export class TransactionsNew {
 
   updateCategoryName(category: EditableCategory, newName: string) {
     category.name = newName;
-    
+
     this.editableTransactions.forEach(transaction => {
       if (transaction.category === category.id) {
         transaction.categoryName = newName;
@@ -174,13 +175,13 @@ export class TransactionsNew {
 
     try {
       const categoriesToSave = this.availableCategories.filter(c => !c.markedForDeletion && c.isNew);
-      
+
       const cleanCategories = categoriesToSave.map(({ isNew, markedForDeletion, ...cat }) => cat);
       const cleanTransactions = this.editableTransactions.map(({ id, categoryName, ...trans }) => trans);
-      
+
       console.log("Categotias a enviar:", cleanCategories);
       console.log("Transacciones a enviar:", cleanTransactions);
-      
+
 
       try {
         const rCategories = await this.categoryService.createManyCategories(cleanCategories);

@@ -12,5 +12,5 @@ import { SidebarComponent } from '../sidebar/sidebar';
   styleUrl: './main-layout.scss'
 })
 export class MainLayoutComponent {
-  sidebarOpen = true;
+  sidebarOpen = false;
 }

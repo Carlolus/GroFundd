@@ -9,8 +9,7 @@
     </div>
 
     <div class="header-actions">
-      <button class="btn primary">+ Nueva transacción</button>
-      <button class="btn secondary">Ver reportes</button>
+      <button class="btn primary" (click)="goToNewTransaction()">+ Nueva transacción</button>
     </div>
   </header>
 
@@ -108,7 +107,7 @@
   <section class="budgets-detail" *ngIf="budgetsSummary?.budgets?.length">
     <div class="section-header">
       <h2>Detalle de Presupuestos</h2>
-      <button class="btn small">Gestionar presupuestos</button>
+      <button class="btn small" (click)="goToBudgets()">Gestionar presupuestos</button>
     </div>
 
     <div class="budget-items">
@@ -166,7 +165,7 @@
   <section class="transactions">
     <div class="transactions-header">
       <h2>Últimas transacciones</h2>
-      <button class="btn small">Ver todas</button>
+      <button class="btn small" (click)="goTransactions()">Ver todas</button>
     </div>
 
     <div class="table-container">

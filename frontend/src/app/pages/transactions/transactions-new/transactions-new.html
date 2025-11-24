@@ -6,24 +6,17 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button 
-      class="tab" 
-      [class.active]="activeTab === 'auto'"
-      (click)="switchTab('auto')"
-    >
+    <button class="tab" [class.active]="activeTab === 'auto'" (click)="switchTab('auto')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" fill="none"/>
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          stroke="currentColor" stroke-width="2" fill="none" />
       </svg>
       Automático (IA)
     </button>
-    <button 
-      class="tab" 
-      [class.active]="activeTab === 'manual'"
-      (click)="switchTab('manual')"
-    >
+    <button class="tab" [class.active]="activeTab === 'manual'" (click)="switchTab('manual')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" />
       </svg>
       Manual
     </button>
@@ -31,13 +24,13 @@
 
   <!-- Auto Mode Content -->
   <div class="tab-content" *ngIf="activeTab === 'auto'">
-    
+
     <!-- Input Section -->
     <div class="auto-input-section" *ngIf="!showResults">
       <div class="info-card">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="#3b82f6" stroke-width="2"/>
-          <path d="M12 16v-4M12 8h.01" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="10" stroke="#3b82f6" stroke-width="2" />
+          <path d="M12 16v-4M12 8h.01" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" />
         </svg>
         <div>
           <h3>¿Cómo funciona?</h3>
@@ -52,25 +45,20 @@
 
       <div class="input-wrapper">
         <label for="natural-input">Describe tus transacciones</label>
-        <textarea
-          id="natural-input"
-          [(ngModel)]="naturalLanguageInput"
+        <textarea id="natural-input" [(ngModel)]="naturalLanguageInput"
           placeholder="Ejemplo: Ayer gasté $50,000 en el supermercado y recibí $200,000 de un pago freelance..."
-          rows="6"
-          [disabled]="isProcessing"
-        ></textarea>
-        
-        <button 
-          class="process-btn"
-          (click)="processNaturalLanguage()"
-          [disabled]="!naturalLanguageInput.trim() || isProcessing"
-        >
+          rows="6" [disabled]="isProcessing"></textarea>
+
+        <button class="process-btn" (click)="processNaturalLanguage()"
+          [disabled]="!naturalLanguageInput.trim() || isProcessing">
           <svg *ngIf="!isProcessing" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
           <svg *ngIf="isProcessing" class="spinner" width="20" height="20" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none"
+              stroke-linecap="round" />
           </svg>
           {{ isProcessing ? 'Procesando...' : 'Procesar con IA' }}
         </button>
@@ -86,7 +74,8 @@
         </div>
         <button class="back-btn" (click)="cancelEdit()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
           Volver
         </button>
@@ -97,7 +86,8 @@
         <div class="section-header">
           <div class="header-content">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#9333EA"/>
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                fill="#9333EA" />
             </svg>
             <div>
               <h3>Categorías Nuevas Detectadas</h3>
@@ -110,26 +100,18 @@
           <div class="category-card" *ngFor="let category of newCategories">
             <div class="category-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
+                <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" />
               </svg>
             </div>
-            <input 
-              type="text" 
-              class="category-name-input"
-              [(ngModel)]="category.name"
-              (blur)="updateCategoryName(category, category.name)"
-              placeholder="Nombre de categoría"
-            >
-            <button 
-              class="delete-category-btn" 
-              (click)="removeCategoryAndReassign(category.id)"
-              title="Eliminar categoría"
-            >
+            <input type="text" class="category-name-input" [(ngModel)]="category.name"
+              (blur)="updateCategoryName(category, category.name)" placeholder="Nombre de categoría">
+            <button class="delete-category-btn" (click)="removeCategoryAndReassign(category.id)"
+              title="Eliminar categoría">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
             </button>
           </div>
@@ -142,23 +124,22 @@
       </div>
 
       <div class="transactions-grid">
-        <div 
-          class="transaction-card" 
-          *ngFor="let transaction of editableTransactions; trackBy: trackByTransactionId"
-          [class.income-card]="transaction.type === 'income'"
-          [class.expense-card]="transaction.type === 'expense'"
-        >
+        <div class="transaction-card" *ngFor="let transaction of editableTransactions; trackBy: trackByTransactionId"
+          [class.income-card]="transaction.type === 'income'" [class.expense-card]="transaction.type === 'expense'">
           <div class="card-header">
-            <span class="type-badge" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
+            <span class="type-badge" [class.income]="transaction.type === 'income'"
+              [class.expense]="transaction.type === 'expense'">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path *ngIf="transaction.type === 'income'" d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path *ngIf="transaction.type === 'expense'" d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path *ngIf="transaction.type === 'income'" d="M12 19V5M5 12l7-7 7 7" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path *ngIf="transaction.type === 'expense'" d="M12 5v14M5 12l7 7 7-7" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               {{ transaction.type === 'income' ? 'Ingreso' : 'Gasto' }}
             </span>
             <button class="remove-btn" (click)="removeTransaction(transaction.id)">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
             </button>
           </div>
@@ -168,24 +149,16 @@
               <label>Monto</label>
               <div class="amount-input">
                 <span class="currency">$</span>
-                <input 
-                  type="number" 
-                  [(ngModel)]="transaction.amount"
-                  min="0"
-                  step="1000"
-                >
+                <input type="number" [(ngModel)]="transaction.amount" min="0" step="1000">
               </div>
             </div>
 
             <div class="form-group">
               <label>Categoría</label>
-              <select 
-                [(ngModel)]="transaction.category"
-                (change)="updateTransactionCategory(transaction, transaction.category)"
-              >
-                <option *ngFor="let category of availableCategories" 
-                        [value]="category.id"
-                        [disabled]="category.markedForDeletion">
+              <select [(ngModel)]="transaction.category"
+                (change)="updateTransactionCategory(transaction, transaction.category)">
+                <option *ngFor="let category of availableCategories" [value]="category.id"
+                  [disabled]="category.markedForDeletion">
                   {{ category.name }}
                   <span *ngIf="category.isNew && !category.markedForDeletion">✨</span>
                 </option>
@@ -194,24 +167,19 @@
 
             <div class="form-group">
               <label>Descripción</label>
-              <input 
-                type="text" 
-                [(ngModel)]="transaction.description"
-                placeholder="Descripción de la transacción"
-              >
+              <input type="text" [(ngModel)]="transaction.description" placeholder="Descripción de la transacción">
             </div>
 
             <div class="form-group">
               <label>Fecha</label>
-              <input 
-                type="date" 
-                [(ngModel)]="transaction.date"
-              >
+              <input type="date" [(ngModel)]="transaction.date">
             </div>
 
             <div class="ai-suggestion" *ngIf="transaction.aiCategorySuggestion">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#9333EA"/>
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="#9333EA" />
               </svg>
               Sugerencia IA: {{ transaction.aiCategorySuggestion }}
             </div>
@@ -225,20 +193,23 @@
         </button>
         <button class="save-btn" (click)="saveAllTransactions()" [disabled]="isProcessing">
           <svg *ngIf="!isProcessing" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
           <svg *ngIf="isProcessing" class="spinner" width="20" height="20" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none"
+              stroke-linecap="round" />
           </svg>
-          {{ isProcessing ? 'Guardando...' : `Guardar ${editableTransactions.length} transacción${editableTransactions.length > 1 ? 'es' : ''}` }}
+          {{ isProcessing ? 'Guardando...' : `Guardar ${editableTransactions.length}
+          transacción${editableTransactions.length > 1 ? 'es' : ''}` }}
         </button>
       </div>
 
       <div class="empty-results" *ngIf="editableTransactions.length === 0">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-          <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.3" />
+          <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3" />
         </svg>
         <h3>No hay transacciones</h3>
         <p>Todas las transacciones fueron eliminadas</p>
@@ -247,21 +218,10 @@
     </div>
   </div>
 
-  <!-- Manual Mode Content (Placeholder) -->
+  <!-- Manual Mode Content -->
   <div class="tab-content" *ngIf="activeTab === 'manual'">
-    <div class="manual-placeholder">
-      <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-      </svg>
-      <h3>Próximamente</h3>
-      <p>El formulario manual estará disponible en la próxima versión</p>
-    </div>
+    <app-transactions-manual></app-transactions-manual>
   </div>
 </div>
 
-<app-modal
-  *ngIf="showModal()"
-  [type]="modalType()"
-  [message]="modalMessage()"
-  (close)="onModalClose()"
-></app-modal>
+<app-modal *ngIf="showModal()" [type]="modalType()" [message]="modalMessage()" (close)="onModalClose()"></app-modal>

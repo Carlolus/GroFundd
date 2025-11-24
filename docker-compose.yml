@@ -10,7 +10,6 @@ services:
       - "${FRONTEND_PORT}:4200"
     volumes:
       - ./frontend:/app:cached
-      - /app/node_modules
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
@@ -30,7 +29,6 @@ services:
     volumes:
     - ./backend/src:/app/src:cached
     - ./backend/.env:/app/.env:cached
-    - /app/node_modules
     environment:
       - NODE_ENV=development
       - DB_HOST=postgres

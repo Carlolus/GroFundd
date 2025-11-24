@@ -11,6 +11,7 @@ import { ModalStatusComponent } from '../../shared/components/modals/modal-statu
 import { TransactionService } from '../../core/services/transaction.service';
 import { Transaction, IncomeVsExpense } from '../../core/interfaces/transaction.interface';
 import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface ExpenseByCategory {
   category_name: string;
@@ -54,7 +55,6 @@ export class DashboardComponent implements OnInit {
   previousMonth = this.currentMonth === 1 ? 12 : this.currentMonth - 1;
   previousYear = this.currentMonth === 1 ? this.currentYear - 1 : this.currentYear;
 
-  // Gráficos
   barChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
@@ -91,7 +91,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private userService: UserService,
     private budgetService: BudgetService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -115,13 +116,11 @@ export class DashboardComponent implements OnInit {
       this.last5transactions = data?.length ? data : [];
     });
 
-    // Cargar gastos por categoría
     this.transactionService.getExpensesByCategory(this.currentYear, this.currentMonth).subscribe(data => {
       this.expensesByCategory = data || [];
       this.updateExpensePieChart();
     });
 
-    // Cargar datos del mes actual y anterior
     forkJoin({
       current: this.transactionService.getIncomedVsExpent(this.currentYear, this.currentMonth),
       previous: this.transactionService.getIncomedVsExpent(this.previousYear, this.previousMonth)
@@ -154,14 +153,16 @@ export class DashboardComponent implements OnInit {
         {
           data: [previous?.expense ?? 0, current?.expense ?? 0],
           label: 'Gastos',
-          backgroundColor: '#913832ff',
-          borderRadius: 6
+          backgroundColor: '#ef4444', // Red-500 (Expense)
+          borderRadius: 6,
+          hoverBackgroundColor: '#dc2626'
         },
         {
           data: [previous?.income ?? 0, current?.income ?? 0],
           label: 'Ingresos',
-          backgroundColor: '#41a767b2',
-          borderRadius: 6
+          backgroundColor: '#14b8a6', // Teal-500 (Income/Primary)
+          borderRadius: 6,
+          hoverBackgroundColor: '#0d9488'
         }
       ]
     };
@@ -172,15 +173,25 @@ export class DashboardComponent implements OnInit {
 
     const topBudgets = this.budgetsSummary.budgets.slice(0, 6);
 
+    // Midnight Mint Palette
+    const themeColors = [
+      '#14b8a6', // Teal
+      '#6366f1', // Indigo
+      '#8b5cf6', // Violet
+      '#ec4899', // Pink
+      '#f43f5e', // Rose
+      '#f59e0b', // Amber
+      '#3b82f6'  // Blue
+    ];
+
     this.doughnutChartData = {
       labels: topBudgets.map(b => b.category_name),
       datasets: [{
         data: topBudgets.map(b => b.spent),
-        backgroundColor: [
-          '#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'
-        ],
-        borderWidth: 2,
-        borderColor: '#ffffff'
+        backgroundColor: themeColors,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        hoverOffset: 4
       }]
     };
   }
@@ -188,10 +199,10 @@ export class DashboardComponent implements OnInit {
   private updateExpensePieChart(): void {
     if (!this.expensesByCategory?.length) return;
 
+    // Extended Midnight Mint Palette
     const colors = [
-      '#ef4444', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981',
-      '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6',
-      '#a855f7', '#d946ef', '#ec4899', '#f43f5e'
+      '#14b8a6', '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b',
+      '#3b82f6', '#06b6d4', '#10b981', '#d946ef', '#64748b', '#94a3b8'
     ];
 
     this.pieChartData = {
@@ -199,8 +210,9 @@ export class DashboardComponent implements OnInit {
       datasets: [{
         data: this.expensesByCategory.map(e => e.total),
         backgroundColor: colors.slice(0, this.expensesByCategory.length),
-        borderWidth: 2,
-        borderColor: '#ffffff'
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        hoverOffset: 4
       }]
     };
   }
@@ -239,5 +251,17 @@ export class DashboardComponent implements OnInit {
 
   onModalClose(): void {
     this.showModal.set(false);
+  }
+
+  goTransactions(): void {
+    this.router.navigate(['dashboard/transactions/']);
+  }
+
+  goToNewTransaction(): void {
+    this.router.navigate(['dashboard/transactions/new']);
+  }
+
+  goToBudgets(): void {
+    this.router.navigate(['dashboard/budgets']);
   }
 }

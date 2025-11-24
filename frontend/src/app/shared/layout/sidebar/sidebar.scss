@@ -36,11 +36,11 @@
 
 // ===== HEADER =====
 .sidebar-header {
-  padding: 24px 20px;
+  padding: 24px 20px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: auto;
 
   .logo-area {
     display: flex;
