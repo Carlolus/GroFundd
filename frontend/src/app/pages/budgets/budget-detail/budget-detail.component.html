@@ -1,0 +1,85 @@
+<div class="budget-detail-container">
+    <!-- Budget Summary Card (Similar to Dashboard) -->
+    <div class="budget-summary-card">
+        <div class="budget-header">
+            <div class="budget-title">
+                <h3>{{ budget.category_name }} <span class="period">({{ month }}/{{ year }})</span></h3>
+                <span class="badge" [ngClass]="getBudgetStatusClass(budget.status)">
+                    {{ budget.status === 'on_track' ? 'En control' : budget.status === 'warning' ? 'Alerta' : 'Excedido'
+                    }}
+                </span>
+            </div>
+            <div class="budget-amounts">
+                <span class="spent">{{ budget.spent | currency:user?.currency:'symbol':'1.0-0' }}</span>
+                <span class="separator">/</span>
+                <span class="limit">{{ budget.limit_amount | currency:user?.currency:'symbol':'1.0-0' }}</span>
+            </div>
+        </div>
+
+        <div class="budget-progress">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" [ngClass]="getProgressBarClass(budget.percentage)"
+                    [style.width.%]="budget.percentage > 100 ? 100 : budget.percentage">
+                </div>
+            </div>
+            <span class="percentage">{{ budget.percentage | number:'1.0-0' }}%</span>
+        </div>
+
+        <div class="budget-stats">
+            <div class="stat">
+                <span class="stat-label">Restante</span>
+                <span class="stat-value" [class.negative]="budget.remaining < 0">
+                    {{ budget.remaining | currency:user?.currency:'symbol':'1.0-0' }}
+                </span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Transacciones</span>
+                <span class="stat-value">{{ budget.transaction_count }}</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Promedio diario</span>
+                <span class="stat-value">{{ budget.daily_average | currency:user?.currency:'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Proyección</span>
+                <span class="stat-value" [class.warning]="budget.projected_total > budget.limit_amount">
+                    {{ budget.projected_total | currency:user?.currency:'symbol':'1.0-0' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="transactions-list-section">
+        <h4>Transacciones del Presupuesto</h4>
+
+        <div class="loading-state" *ngIf="loading">
+            <p>Cargando transacciones...</p>
+        </div>
+
+        <div class="empty-state" *ngIf="!loading && transactions.length === 0">
+            <p>No hay transacciones registradas para este presupuesto.</p>
+        </div>
+
+        <div class="table-container" *ngIf="!loading && transactions.length > 0">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        <th class="text-right">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of transactions">
+                        <td>{{ t.date | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ t.description || '(sin descripción)' }}</td>
+                        <td class="text-right negative">
+                            -{{ t.amount | currency:user?.currency:'symbol':'1.0-0' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

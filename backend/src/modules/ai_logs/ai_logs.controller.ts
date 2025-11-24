@@ -1,13 +1,13 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Request, 
-  UseGuards 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Request,
+  UseGuards
 } from '@nestjs/common';
 import { AiLogService } from './ai_logs.service';
 import { CreateAiLogDto } from './dto/create-ai_log.dto';
@@ -15,12 +15,12 @@ import { UpdateAiLogDto } from './dto/update-ai_log.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AiLog } from './entities/ai_log.entity';
 
-import { 
-  ApiTags, 
-  ApiBearerAuth, 
-  ApiResponse, 
-  ApiParam, 
-  ApiBody 
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiParam,
+  ApiBody
 } from '@nestjs/swagger';
 
 @ApiTags('AI Logs')
@@ -28,13 +28,14 @@ import {
 @UseGuards(JwtAuthGuard)
 @Controller('ai-logs')
 export class AiLogController {
-  constructor(private readonly service: AiLogService) {}
+  constructor(private readonly service: AiLogService) { }
 
   @Post()
   @ApiResponse({ status: 201, description: 'AI log created successfully.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiBody({type: CreateAiLogDto,})
+  @ApiBody({ type: CreateAiLogDto, })
   create(@Body() dto: CreateAiLogDto): Promise<AiLog> {
+    console.log("Intentando guardar dto:", dto)
     return this.service.create(dto);
   }
 

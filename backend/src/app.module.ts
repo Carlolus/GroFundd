@@ -9,6 +9,7 @@ import { BudgetModule } from './modules/budget/budget.module';
 import { InsightModule } from './modules/insight/insight.module';
 import { AiLogsModule } from './modules/ai_logs/ai_logs.module';
 import { AiParseModule } from './modules/ai-parse/ai-parse.module';
+import { GeminiModule } from './modules/shared/gemini.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { AiParseModule } from './modules/ai-parse/ai-parse.module';
     BudgetModule,
     InsightModule,
     AiLogsModule,
-    AiParseModule
+    AiParseModule,
+    GeminiModule
   ],
 })
 export class AppModule { }

@@ -1,148 +1,142 @@
-    <div class="transactions-container">
-      <!-- Header with Search and Button -->
-      <div class="header">
-        <div class="search-wrapper">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <input 
-            type="text" 
-            class="search-input" 
-            placeholder="Buscar transacciones..."
-            [(ngModel)]="searchTerm"
-          >
-        </div>
-        
-        <button class="new-transaction-btn" (click)="goToNewTransaction()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Nueva Transacción
-        </button>
-      </div>
-
-      <!-- Table -->
-      <div class="table-wrapper">
-        <table class="transactions-table">
-          <thead>
-            <tr>
-              <th>Tipo</th>
-              <th>Categoría</th>
-              <th>Monto</th>
-              <th>Descripción</th>
-              <th>Fecha</th>
-              <th>Sugerencia IA</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let transaction of transactions; trackBy: trackByTransactionId">
-              <td>
-                <span class="type-badge" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path *ngIf="transaction.type === 'income'" d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path *ngIf="transaction.type === 'expense'" d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  {{ transaction.type === 'income' ? 'Ingreso' : 'Gasto' }}
-                </span>
-              </td>
-              <td>
-                <span class="category">{{ transaction.category?.name || '-' }}</span>
-              </td>
-              <td>
-                <span class="amount" [class.income-amount]="transaction.type === 'income'" [class.expense-amount]="transaction.type === 'expense'">
-                  {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency}}
-                </span>
-              </td>
-              <td>
-                <span class="description">{{ transaction.description || '-' }}</span>
-              </td>
-              <td>
-                <span class="date">{{ formatDate(transaction.date) }}</span>
-              </td>
-              <td>
-                <span class="ai-suggestion" *ngIf="transaction.aiCategorySuggestion">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#9333EA"/>
-                  </svg>
-                  {{ transaction.aiCategorySuggestion }}
-                </span>
-                <span *ngIf="!transaction.aiCategorySuggestion">-</span>
-              </td>
-              <td>
-                <div class="actions-cell">
-                  <button class="menu-btn" (click)="toggleMenu(transaction.id!)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="5" r="2" fill="currentColor"/>
-                      <circle cx="12" cy="12" r="2" fill="currentColor"/>
-                      <circle cx="12" cy="19" r="2" fill="currentColor"/>
-                    </svg>
-                  </button>
-                  
-                  <div class="dropdown-menu" *ngIf="openMenuId === transaction.id">
-                    <button class="menu-item" (click)="onView(transaction)">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                      </svg>
-                      Ver
-                    </button>
-                    <button class="menu-item" (click)="onModify(transaction)">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
-                      </svg>
-                      Modificar
-                    </button>
-                    <button class="menu-item delete" (click)="onDelete(transaction)">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
-                        <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2"/>
-                      </svg>
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <!-- Empty State -->
-        <div class="empty-state" *ngIf="transactions.length === 0">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
-            <path d="M7 8h10M7 12h10M7 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <h3>No hay transacciones</h3>
-          <p>Comienza creando tu primera transacción</p>
-        </div>
-      </div>
+<div class="transactions-container">
+  <!-- Header with Search and Button -->
+  <div class="header">
+    <div class="search-wrapper">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <input type="text" class="search-input" placeholder="Buscar transacciones..." [(ngModel)]="searchTerm">
     </div>
 
-<app-modal-create
-  *ngIf="showModal"
-  [entityType]="currentEntity"
-  [isEditMode]="isEditMode"
-  [initialData]="editingEntity"
-  (saved)="onModalSaved($event)"
-  (closed)="showModal = false">
+    <button class="new-transaction-btn" (click)="goToNewTransaction()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      Nueva Transacción
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table class="transactions-table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Categoría</th>
+          <th>Monto</th>
+          <th>Descripción</th>
+          <th>Fecha</th>
+          <th>Sugerencia IA</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of transactions; trackBy: trackByTransactionId">
+          <td>
+            <span class="type-badge" [class.income]="transaction.type === 'income'"
+              [class.expense]="transaction.type === 'expense'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path *ngIf="transaction.type === 'income'" d="M12 19V5M5 12l7-7 7 7" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path *ngIf="transaction.type === 'expense'" d="M12 5v14M5 12l7 7 7-7" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              {{ transaction.type === 'income' ? 'Ingreso' : 'Gasto' }}
+            </span>
+          </td>
+          <td>
+            <span class="category">{{ transaction.category?.name || '-' }}</span>
+          </td>
+          <td>
+            <span class="amount" [class.income-amount]="transaction.type === 'income'"
+              [class.expense-amount]="transaction.type === 'expense'">
+              {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency}}
+            </span>
+          </td>
+          <td>
+            <span class="description">{{ transaction.description || '-' }}</span>
+          </td>
+          <td>
+            <span class="date">{{ formatDate(transaction.date) }}</span>
+          </td>
+          <td>
+            <span class="ai-suggestion" *ngIf="transaction.aiCategorySuggestion">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="#9333EA" />
+              </svg>
+              {{ transaction.aiCategorySuggestion }}
+            </span>
+            <span *ngIf="!transaction.aiCategorySuggestion">-</span>
+          </td>
+          <td>
+            <div class="actions-cell">
+              <button class="menu-btn" (click)="toggleMenu(transaction.id!)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="5" r="2" fill="currentColor" />
+                  <circle cx="12" cy="12" r="2" fill="currentColor" />
+                  <circle cx="12" cy="19" r="2" fill="currentColor" />
+                </svg>
+              </button>
+
+              <div class="dropdown-menu" *ngIf="openMenuId === transaction.id">
+                <button class="menu-item" (click)="onView(transaction)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Ver
+                </button>
+                <button class="menu-item" (click)="onModify(transaction)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                      stroke-width="2" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                      stroke-width="2" />
+                  </svg>
+                  Modificar
+                </button>
+                <button class="menu-item delete" (click)="onDelete(transaction)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                    <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="transactions.length === 0">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" />
+        <path d="M7 8h10M7 12h10M7 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <h3>No hay transacciones</h3>
+      <p>Comienza creando tu primera transacción</p>
+    </div>
+  </div>
+</div>
+
+<app-modal-create *ngIf="showModal" [entityType]="currentEntity" [isEditMode]="isEditMode" [initialData]="editingEntity"
+  (saved)="onModalSaved($event)" (closed)="showModal = false">
 </app-modal-create>
 
-<app-modal
-  *ngIf="showStatusModal()"
-  [type]="modalType()"
-  [message]="modalMessage()"
-  (close)="onModalClose()"
-></app-modal>
+<app-modal *ngIf="showStatusModal()" [type]="modalType()" [message]="modalMessage()"
+  (close)="onModalClose()"></app-modal>
 
-<app-modal-confirm
-  *ngIf="showConfirmModal()"
-  [message]="modalConfirmMessage()"
-  (confirm)="onConfirmDelete($event)">
+<app-modal-confirm *ngIf="showConfirmModal()" [message]="modalConfirmMessage()" (confirm)="onConfirmDelete($event)">
 </app-modal-confirm>
 
 
 
 
+<app-transaction-detail *ngIf="selectedTransaction" [transaction]="selectedTransaction" (close)="closeDetailModal()">
+</app-transaction-detail>

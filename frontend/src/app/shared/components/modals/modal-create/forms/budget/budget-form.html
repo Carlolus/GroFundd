@@ -1,25 +1,56 @@
 <div class="form-container">
   <form (ngSubmit)="onSubmit()">
+
+    <!-- Custom Category Select with Search -->
     <div class="form-group">
-      <label for="category">Categoría</label>
-      <select id="category" name="category" [(ngModel)]="data.category" required>
-        <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
-      </select>
+      <label>Categoría</label>
+      <div class="custom-select-container">
+        <div class="selected-option" (click)="toggleCategoryDropdown()" [class.active]="showCategoryDropdown">
+          {{ selectedCategoryName || 'Seleccionar categoría' }}
+          <span class="arrow">▼</span>
+        </div>
+
+        <div class="dropdown-list" *ngIf="showCategoryDropdown">
+          <div class="search-box">
+            <input type="text" placeholder="Buscar..." [(ngModel)]="categorySearchTerm"
+              (ngModelChange)="filterCategories()" [ngModelOptions]="{standalone: true}" autofocus>
+          </div>
+          <div class="options-container">
+            <div class="option" *ngFor="let category of filteredCategories" (click)="selectCategory(category)"
+              [class.selected]="category.id === data.category">
+              {{ category.name }}
+            </div>
+            <div class="option no-results" *ngIf="filteredCategories.length === 0">
+              No se encontraron resultados
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="month">Mes</label>
-      <input type="number" id="month" name="month" [(ngModel)]="data.month" required min="1" max="12">
-    </div>
+    <!-- Month and Year Row -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="month">Mes</label>
+        <select id="month" name="month" [(ngModel)]="data.month" required>
+          <option [ngValue]="null" disabled>Seleccionar</option>
+          <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
+        </select>
+      </div>
 
-    <div class="form-group">
-      <label for="year">Año</label>
-      <input type="number" id="year" name="year" [(ngModel)]="data.year" required>
+      <div class="form-group">
+        <label for="year">Año</label>
+        <input type="number" id="year" name="year" [(ngModel)]="data.year" required>
+      </div>
     </div>
 
     <div class="form-group">
       <label for="limit_amount">Límite</label>
-      <input type="number" id="limit_amount" name="limit_amount" [(ngModel)]="data.limit_amount" required>
+      <div class="input-with-icon">
+        <span class="currency-symbol">$</span>
+        <input type="number" id="limit_amount" name="limit_amount" [(ngModel)]="data.limit_amount" required
+          placeholder="0.00">
+      </div>
     </div>
 
     <button type="submit" [disabled]="loading" class="submit-btn">

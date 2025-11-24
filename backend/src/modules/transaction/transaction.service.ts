@@ -164,4 +164,26 @@ export class TransactionService {
       percentage: total > 0 ? (parseFloat(item.total || '0') / total) * 100 : 0
     }));
   }
+
+  async getTransactionsByCategory(
+    userId: string,
+    categoryId: string,
+    year: number,
+    month: number,
+  ): Promise<Transaction[]> {
+
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`User ${userId} not found`);
+
+    return this.transactionRepo
+      .createQueryBuilder('transaction')
+      .leftJoinAndSelect('transaction.category', 'category')
+      .leftJoinAndSelect('transaction.user', 'user')
+      .where('transaction.user_id = :userId', { userId })
+      .andWhere('transaction.category_id = :categoryId', { categoryId })
+      .andWhere('EXTRACT(YEAR FROM transaction.date) = :year', { year })
+      .andWhere('EXTRACT(MONTH FROM transaction.date) = :month', { month })
+      .orderBy('transaction.date', 'DESC')
+      .getMany();
+  }
 }

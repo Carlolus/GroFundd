@@ -1,0 +1,48 @@
+<div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h2>Detalle de Transacción</h2>
+            <button class="close-btn" (click)="onClose()">×</button>
+        </header>
+
+        <div class="modal-body" *ngIf="transaction">
+            <div class="amount-section" [class.income]="transaction.type === 'income'"
+                [class.expense]="transaction.type === 'expense'">
+                <span class="currency-symbol">$</span>
+                <span class="amount">{{ transaction.amount | number:'1.2-2' }}</span>
+                <span class="type-label">{{ transaction.type === 'income' ? 'Ingreso' : 'Gasto' }}</span>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label>Categoría</label>
+                    <div class="value category-badge">
+                        {{ categoryName }}
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Fecha</label>
+                    <div class="value">{{ formatDate(transaction.date) }}</div>
+                </div>
+
+                <div class="detail-item full-width">
+                    <label>Descripción</label>
+                    <div class="value description">{{ transaction.description || 'Sin descripción' }}</div>
+                </div>
+
+                <div class="detail-item full-width" *ngIf="transaction.aiCategorySuggestion">
+                    <label>Sugerencia IA</label>
+                    <div class="value ai-suggestion">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                fill="currentColor" />
+                        </svg>
+                        {{ transaction.aiCategorySuggestion }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

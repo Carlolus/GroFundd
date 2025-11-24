@@ -1,0 +1,37 @@
+<div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h2>Detalle de Categoría</h2>
+            <button class="close-btn" (click)="onClose()">×</button>
+        </header>
+
+        <div class="modal-body" *ngIf="category">
+            <div class="category-header">
+                <div class="icon-placeholder">
+                    {{ category.name.charAt(0).toUpperCase() }}
+                </div>
+                <h3>{{ category.name }}</h3>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <label>ID</label>
+                    <div class="value">#{{ category.id }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Fecha de Creación</label>
+                    <div class="value">{{ formatDate(category.createdAt) }}</div>
+                </div>
+
+                <div class="detail-item full-width">
+                    <label>Generada por IA</label>
+                    <div class="value ai-status" [class.is-ai]="category.isAiGenerated">
+                        <span class="status-indicator"></span>
+                        {{ category.isAiGenerated ? 'Generada automáticamente por IA' : 'Creada manualmente' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

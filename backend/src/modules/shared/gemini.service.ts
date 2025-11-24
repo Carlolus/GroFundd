@@ -1,13 +1,14 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { ConfigService } from '@nestjs/config';
+import { AiLogService } from '../ai_logs/ai_logs.service';
 
 @Injectable()
 export class GeminiService implements OnModuleInit {
   private client: GoogleGenerativeAI;
   private model: GenerativeModel;
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService, private aiLogService: AiLogService) { }
 
   onModuleInit() {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -17,10 +18,10 @@ export class GeminiService implements OnModuleInit {
 
     this.client = new GoogleGenerativeAI(apiKey);
 
-    this.model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash'});
+    this.model = this.client.getGenerativeModel({ model: 'gemini-2.5-flash' });
   }
 
-  async parseTransactionsFromText(text: string, user:string, currency: string, categories: string[], categoriesCount: number) {
+  async parseTransactionsFromText(text: string, user: string, currency: string, categories: string[], categoriesCount: number) {
 
     const today = new Date();
     const onlyDate = today.toISOString().split('T')[0]; // "2025-10-28"
@@ -29,7 +30,7 @@ export class GeminiService implements OnModuleInit {
     const newId = categoriesCount + 2;
 
 
-const prompt = `
+    const prompt = `
 Current date: "${onlyDate}"
 You are a financial assistant specialized in analyzing natural language text.
 
@@ -123,23 +124,30 @@ Respond **only** with the final JSON object.
     const result = await this.model.generateContent(prompt);
     const responseText = result.response.text();
     console.log("Respuesta RAW de Gemini:", responseText)
+    this.aiLogService.create({
+      userId: user,
+      type: 'Transaction Parse',
+      input_text: text,
+      output_text: responseText,
+      model: 'gemini-2.5-flash',
+    });
 
     let jsonString = responseText.trim();
-    
+
     if (jsonString.startsWith('```json')) {
       jsonString = jsonString.substring(7);
     }
     if (jsonString.endsWith('```')) {
       jsonString = jsonString.substring(0, jsonString.length - 3);
     }
-    jsonString = jsonString.trim(); 
+    jsonString = jsonString.trim();
     try {
       const parsed = JSON.parse(jsonString);
-      return parsed; 
-      
-    } catch(e) {
+      return parsed;
+
+    } catch (e) {
       console.error("🚫 ERROR: Fallo al parsear el JSON de Gemini. Cadena:", jsonString, "Error:", e);
-      return { categories: [], transactions: [] }; 
+      return { categories: [], transactions: [] };
     }
   }
 }

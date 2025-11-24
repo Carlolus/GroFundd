@@ -123,4 +123,20 @@ export class TransactionController {
   ) {
     return this.transactionService.getExpensesByCategory(userId, year, month);
   }
+
+  @Get('category/:categoryId')
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'List all transactions for a category in a defined month.', type: [Transaction] })
+  asyncGetTransactionsByCategory(
+    @Request() req,
+    @Param('categoryId') categoryId: string,
+    @Query('month') month?: number,
+    @Query('year') year?: number
+  ) {
+    const currentDate = new Date();
+    const finalMonth = month || currentDate.getMonth() + 1;
+    const finalYear = year || currentDate.getFullYear();
+
+    return this.transactionService.getTransactionsByCategory(req.user.id, categoryId, finalYear, finalMonth);
+  }
 }

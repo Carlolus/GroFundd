@@ -1,0 +1,43 @@
+<div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h2>Detalle del Log de IA</h2>
+            <button class="close-btn" (click)="onClose()">×</button>
+        </header>
+
+        <div class="modal-body" *ngIf="log">
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <label>ID</label>
+                    <div class="value code-font">{{ log.id }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Fecha</label>
+                    <div class="value">{{ formatDate(log.created_at) }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Tipo</label>
+                    <div class="value badge">{{ log.type }}</div>
+                </div>
+                <div class="meta-item">
+                    <label>Modelo</label>
+                    <div class="value">{{ log.model }}</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <label>Input Text</label>
+                <div class="text-block input-block">
+                    {{ log.input_text }}
+                </div>
+            </div>
+
+            <div class="content-section">
+                <label>Output Text</label>
+                <div class="text-block output-block">
+                    <pre><code>{{ formattedOutput }}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,124 +3,140 @@
   <div class="header">
     <div class="search-wrapper">
       <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       </svg>
-      <input 
-        type="text" 
-        class="search-input" 
-        placeholder="Buscar presupuestos..."
-        [(ngModel)]="searchTerm"
-      >
+      <input type="text" class="search-input" placeholder="Buscar presupuestos..." [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()">
     </div>
-    
+
     <button class="new-transaction-btn" (click)="openModal('budget')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       </svg>
       Nuevo Presupuesto
     </button>
   </div>
 
-  <!-- Table -->
-  <div class="table-wrapper">
-    <table class="transactions-table">
-      <thead>
-        <tr>
-          <th>Categoría</th>
-          <th>Mes</th>
-          <th>Año</th>
-          <th>Límite</th>
-          <th>Fecha de Creación</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let budget of budgets; trackBy: trackByBudgetId">
-          <td>
-            <span class="category">{{ budget.category_name }}</span>
-          </td>
-          <td>
-            <span class="month">{{ months.at(budget.month - 1) }}</span>
-          </td>
-          <td>
-            <span class="year">{{ budget.year }}</span>
-          </td>
-          <td>
-            <span class="limit">{{ budget.limit_amount | currency }}</span>
-          </td>
-          <td>
-            <span class="date">{{ formatDate(budget.created_at) }}</span>
-          </td>
-          <td>
-            <div class="actions-cell">
-              <button class="menu-btn" (click)="toggleMenu(budget.id!)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="5" r="2" fill="currentColor"/>
-                  <circle cx="12" cy="12" r="2" fill="currentColor"/>
-                  <circle cx="12" cy="19" r="2" fill="currentColor"/>
+  <!-- Budget Cards Grid -->
+  <div class="budgets-grid" *ngIf="filteredBudgets.length > 0; else emptyState">
+    <div class="budget-card" *ngFor="let budget of filteredBudgets; trackBy: trackByBudgetId">
+      <div class="card-header">
+        <div class="header-top">
+          <div class="title-section">
+            <h3>{{ budget.category_name }}</h3>
+            <span class="badge" [ngClass]="getBudgetStatusClass(budget.status)">
+              {{ budget.status === 'on_track' ? 'En control' : budget.status === 'warning' ? 'Alerta' : 'Excedido' }}
+            </span>
+          </div>
+
+          <div class="actions-cell">
+            <button class="menu-btn" (click)="toggleMenu(budget.id)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="5" r="2" fill="currentColor" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" />
+                <circle cx="12" cy="19" r="2" fill="currentColor" />
+              </svg>
+            </button>
+
+            <div class="dropdown-menu" *ngIf="openMenuId === budget.id">
+              <button class="menu-item" (click)="onView(budget)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
                 </svg>
+                Ver
               </button>
-              
-              <div class="dropdown-menu" *ngIf="openMenuId === budget.id">
-                <button class="menu-item" (click)="onView(budget)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                  Ver
-                </button>
-                <button class="menu-item" (click)="onModify(budget)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                  Modificar
-                </button>
-                <button class="menu-item delete" (click)="onDelete(budget)">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2"/>
-                    <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2"/>
-                  </svg>
-                  Eliminar
-                </button>
-              </div>
+              <button class="menu-item" (click)="onModify(budget)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                    stroke-width="2" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                    stroke-width="2" />
+                </svg>
+                Modificar
+              </button>
+              <button class="menu-item delete" (click)="onDelete(budget)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                    stroke="currentColor" stroke-width="2" />
+                  <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Eliminar
+              </button>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="budgets.length === 0">
+          </div>
+        </div>
+
+        <div class="budget-amounts">
+          <span class="spent">{{ budget.spent | currency:user?.currency:'symbol':'1.0-0' }}</span>
+          <span class="separator">/</span>
+          <span class="limit">{{ budget.limit_amount | currency:user?.currency:'symbol':'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="card-progress">
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" [ngClass]="getProgressBarClass(budget.percentage)"
+            [style.width.%]="budget.percentage > 100 ? 100 : budget.percentage">
+          </div>
+        </div>
+        <span class="percentage">{{ budget.percentage | number:'1.0-0' }}%</span>
+      </div>
+
+      <div class="card-stats">
+        <div class="stat">
+          <span class="stat-label">Restante</span>
+          <span class="stat-value" [class.negative]="budget.remaining < 0">
+            {{ budget.remaining | currency:user?.currency:'symbol':'1.0-0' }}
+          </span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Transacciones</span>
+          <span class="stat-value">{{ budget.transaction_count }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-view" (click)="onView(budget)">Ver Detalles</button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
       <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
-        <path d="M7 8h10M7 12h10M7 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" />
+        <path d="M7 8h10M7 12h10M7 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       </svg>
       <h3>No hay presupuestos</h3>
       <p>Comienza creando tu primer presupuesto</p>
     </div>
-  </div>
+  </ng-template>
 </div>
 
-<app-modal-create
-  *ngIf="showModal"
-  [entityType]="currentEntity"
-  [isEditMode]="isEditMode"
-  [initialData]="editingEntity"
-  (saved)="onModalSaved($event)"
-  (closed)="showModal = false">
+<!-- Modals -->
+<app-modal-create *ngIf="showModal" [entityType]="currentEntity" [isEditMode]="isEditMode" [initialData]="editingEntity"
+  (saved)="onModalSaved($event)" (closed)="showModal = false">
 </app-modal-create>
 
-<app-modal
-  *ngIf="showStatusModal()"
-  [type]="modalType()"
-  [message]="modalMessage()"
-  (close)="onModalClose()"
-></app-modal>
+<app-modal *ngIf="showStatusModal()" [type]="modalType()" [message]="modalMessage()"
+  (close)="onModalClose()"></app-modal>
 
-<app-modal-confirm
-  *ngIf="showConfirmModal()"
-  [message]="modalConfirmMessage()"
-  (confirm)="onConfirmDelete($event)">
+<app-modal-confirm *ngIf="showConfirmModal()" [message]="modalConfirmMessage()" (confirm)="onConfirmDelete($event)">
 </app-modal-confirm>
+
+<!-- Detail Modal Overlay -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Detalle de Presupuesto</h2>
+      <button class="close-btn" (click)="closeDetailModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <app-budget-detail *ngIf="selectedBudget && budgetsSummary" [budget]="selectedBudget" [user]="user"
+        [month]="budgetsSummary.period.month" [year]="budgetsSummary.period.year">
+      </app-budget-detail>
+    </div>
+  </div>
+</div>

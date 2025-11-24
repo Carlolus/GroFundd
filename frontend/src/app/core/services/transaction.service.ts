@@ -28,8 +28,8 @@ export class TransactionService {
   getIncomedVsExpent(year: number, month: number) {
     const userId = this.userService.getCurrentUserUUID()
     return this.http.get<IncomeVsExpense>(`${this.apiUrl}/user/income_expenses/${userId}`, {
-        params: { year: year, month: month }
-      });
+      params: { year: year, month: month }
+    });
   }
 
   createTransaction(transaction: Transaction) {
@@ -49,12 +49,19 @@ export class TransactionService {
       this.http.post<Transaction[]>(`${this.apiUrl}/bulk`, transactions)
     );
   }
-  
-  
+
+
   getExpensesByCategory(year: number, month: number) {
     const userId = this.userService.getCurrentUserUUID()
     return this.http.get<ExpenseByCategory[]>(
       `${this.apiUrl}/user/expenses_by_category/${userId}?year=${year}&month=${month}`
+    );
+  }
+
+  getTransactionsByCategory(categoryId: number, year: number, month: number) {
+    return this.http.get<Transaction[]>(
+      `${this.apiUrl}/category/${categoryId}`,
+      { params: { year: year.toString(), month: month.toString() } }
     );
   }
 }

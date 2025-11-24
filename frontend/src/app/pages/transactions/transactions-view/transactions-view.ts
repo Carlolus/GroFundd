@@ -25,10 +25,12 @@ interface Transaction {
   createdAt?: string;
 }
 
+import { TransactionDetailComponent } from '../transaction-detail/transaction-detail.component';
+
 @Component({
   selector: 'app-transactions-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalStatusComponent, ModalConfirm, ModalCreate],
+  imports: [CommonModule, FormsModule, RouterModule, ModalStatusComponent, ModalConfirm, ModalCreate, TransactionDetailComponent],
   templateUrl: './transactions-view.html',
   styleUrls: ['./transactions-view.scss'],
 })
@@ -39,8 +41,8 @@ export class TransactionsView {
   constructor(
     private router: Router,
     private transactionService: TransactionService
-  ) {}
-  
+  ) { }
+
   searchTerm = '';
   openMenuId: string | null = null;
 
@@ -48,6 +50,7 @@ export class TransactionsView {
     this.transactionService.getTransactions().subscribe({
       next: (data) => {
         this.transactions = data || [];
+        console.log(this.transactions);
       },
       error: (err) => {
         console.error('Error loading categories:', err);
@@ -58,6 +61,7 @@ export class TransactionsView {
 
   async ngOnInit() {
     await this.loadTransactions();
+
   }
 
   goToNewTransaction() {
@@ -77,16 +81,23 @@ export class TransactionsView {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-CO', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-CO', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
+  // Detail Modal
+  selectedTransaction: Transaction | null = null;
+
   onView(transaction: Transaction) {
     this.openMenuId = null;
-    // Implement your view logic here
+    this.selectedTransaction = transaction;
+  }
+
+  closeDetailModal() {
+    this.selectedTransaction = null;
   }
 
   onModify(transaction: Transaction) {
@@ -107,7 +118,7 @@ export class TransactionsView {
   isEditMode = false;
 
   // edit
-  openEditModal(entity: 'transaction' , data: any) {
+  openEditModal(entity: 'transaction', data: any) {
     this.currentEntity = entity;
     this.editingEntity = data;
     this.isEditMode = true;
@@ -118,13 +129,13 @@ export class TransactionsView {
     this.showModal = false;
     if (success) {
       this.loadTransactions();
-      const message = this.isEditMode 
-        ? 'Transacción actualizada correctamente' 
+      const message = this.isEditMode
+        ? 'Transacción actualizada correctamente'
         : 'Transacción creada correctamente';
       this.openStatusModal('success', message);
     } else {
-      const message = this.isEditMode 
-        ? 'Error al actualizar la Transacción' 
+      const message = this.isEditMode
+        ? 'Error al actualizar la Transacción'
         : 'Error al crear la Transacción';
       this.openStatusModal('error', message);
     }

@@ -9,5 +9,6 @@ import { AiLog } from './entities/ai_log.entity';
   imports: [TypeOrmModule.forFeature([AiLog, User])],
   controllers: [AiLogController],
   providers: [AiLogService],
+  exports: [AiLogService]
 })
-export class AiLogsModule {}
+export class AiLogsModule { }

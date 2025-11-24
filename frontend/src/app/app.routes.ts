@@ -27,6 +27,7 @@ export const routes: Routes = [
       { path: 'transactions', component: TransactionsView },
       { path: 'transactions/new', component: TransactionsNew },
       { path: 'budgets', loadComponent: () => import('./pages/budgets/budgets-view/budgets-view').then(m => m.BudgetsView) },
+      { path: 'ai-logs', loadComponent: () => import('./pages/ai-logs/ai-logs-view/ai-logs-view').then(m => m.AiLogsView) },
       { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent) }
     ]

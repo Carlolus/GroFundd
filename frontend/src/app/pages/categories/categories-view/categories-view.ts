@@ -9,10 +9,12 @@ import { ModalCreate } from '../../../shared/components/modals/modal-create/moda
 import { ModalStatusComponent } from '../../../shared/components/modals/modal-status/modal-status.component';
 import { ModalConfirm } from '../../../shared/components/modals/modal-confirm/modal-confirm';
 
+import { CategoryDetailComponent } from '../category-detail/category-detail.component';
+
 @Component({
   selector: 'app-categories-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ModalCreate, ModalStatusComponent, ModalConfirm],
+  imports: [CommonModule, FormsModule, RouterModule, ModalCreate, ModalStatusComponent, ModalConfirm, CategoryDetailComponent],
   templateUrl: './categories-view.html',
   styleUrls: ['./categories-view.scss'],
 })
@@ -23,7 +25,7 @@ export class CategoriesView {
   constructor(
     private router: Router,
     private categoryService: CategoryService
-  ) {}
+  ) { }
 
   loadCategories() {
     this.categoryService.getCategories().subscribe({
@@ -55,23 +57,30 @@ export class CategoriesView {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-CO', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('es-CO', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
+  // Detail Modal
+  selectedCategory: Category | null = null;
+
   onView(category: Category) {
-    console.log('View:', category);
+    console.log('Opening category detail for:', category);
     this.openMenuId = null;
-    // Implement your view logic here
+    this.selectedCategory = category;
+  }
+
+  closeDetailModal() {
+    this.selectedCategory = null;
   }
 
   onModify(category: Category) {
     console.log('Modify:', category);
     this.openMenuId = null;
-    this.openEditModal("category",category);
+    this.openEditModal("category", category);
   }
 
   onDelete(category: Category) {
@@ -106,13 +115,13 @@ export class CategoriesView {
     this.showModal = false;
     if (success) {
       this.loadCategories();
-      const message = this.isEditMode 
-        ? 'Categoría actualizada correctamente' 
+      const message = this.isEditMode
+        ? 'Categoría actualizada correctamente'
         : 'Categoría creada correctamente';
       this.openStatusModal('success', message);
     } else {
-      const message = this.isEditMode 
-        ? 'Error al actualizar la categoría' 
+      const message = this.isEditMode
+        ? 'Error al actualizar la categoría'
         : 'Error al crear la categoría';
       this.openStatusModal('error', message);
     }
