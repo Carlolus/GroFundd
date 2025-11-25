@@ -21,6 +21,7 @@ export class TransactionForm implements OnInit {
     data: any = {};
     categories: Category[] = [];
     loading = false;
+    formattedAmount = '';
     constructor(
         private categoryService: CategoryService,
         private transactionService: TransactionService
@@ -34,6 +35,10 @@ export class TransactionForm implements OnInit {
                 date: new Date(this.initialData.date).toISOString().substring(0, 10),
                 category: this.initialData.category ? this.initialData.category.id : null
             };
+            // Format initial amount
+            if (this.data.amount) {
+                this.formattedAmount = this.formatNumber(this.data.amount);
+            }
         }
     }
 
@@ -43,6 +48,27 @@ export class TransactionForm implements OnInit {
         } catch (error) {
             console.error('Error loading categories:', error);
             this.categories = [];
+        }
+    }
+
+    formatNumber(value: number | string): string {
+        // Convert to number first to handle decimals properly
+        const num = typeof value === 'number' ? value : parseFloat(String(value));
+        if (isNaN(num)) return '';
+        // Round to integer and format with thousands separator
+        return Math.round(num).toLocaleString('es-CO');
+    }
+
+    onAmountInput(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const rawValue = input.value.replace(/\D/g, '');
+
+        if (rawValue) {
+            this.data.amount = parseInt(rawValue, 10);
+            this.formattedAmount = this.formatNumber(rawValue);
+        } else {
+            this.data.amount = null;
+            this.formattedAmount = '';
         }
     }
 

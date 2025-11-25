@@ -48,8 +48,8 @@
       <label for="limit_amount">Límite</label>
       <div class="input-with-icon">
         <span class="currency-symbol">$</span>
-        <input type="number" id="limit_amount" name="limit_amount" [(ngModel)]="data.limit_amount" required
-          placeholder="0.00">
+        <input type="text" id="limit_amount" name="limit_amount" [value]="formattedLimitAmount"
+          (input)="onLimitAmountInput($event)" required placeholder="0">
       </div>
     </div>
 

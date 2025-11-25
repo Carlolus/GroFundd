@@ -43,6 +43,9 @@ export class TransactionsNew {
   showResults = false;
   errorMessage = '';
 
+  // Formatted amounts for display (key: transaction.id, value: formatted string)
+  formattedAmounts: Map<string, string> = new Map();
+
   manualForm = {
     type: 'expense' as 'income' | 'expense',
     amount: 0,
@@ -104,11 +107,16 @@ export class TransactionsNew {
 
       this.newCategories = newCategoriesFromAI;
 
-      this.editableTransactions = response.transactions.map((t, index) => ({
-        ...t,
-        id: `temp-${Date.now()}-${index}`,
-        categoryName: this.availableCategories.find(c => c.id === t.category)?.name
-      }));
+      this.editableTransactions = response.transactions.map((t, index) => {
+        const transaction = {
+          ...t,
+          id: `temp-${Date.now()}-${index}`,
+          categoryName: this.availableCategories.find(c => c.id === t.category)?.name
+        };
+        // Initialize formatted amount
+        this.formattedAmounts.set(transaction.id, this.formatNumber(t.amount));
+        return transaction;
+      });
 
       this.showResults = true;
     } catch (error: any) {
@@ -122,6 +130,7 @@ export class TransactionsNew {
 
   removeTransaction(id: string) {
     this.editableTransactions = this.editableTransactions.filter(t => t.id !== id);
+    this.formattedAmounts.delete(id);
   }
 
   updateTransactionCategory(transaction: EditableTransaction, category: string | number) {
@@ -208,10 +217,36 @@ export class TransactionsNew {
     this.newCategories = [];
     this.showResults = false;
     this.errorMessage = '';
+    this.formattedAmounts.clear();
   }
 
   cancelEdit() {
     this.resetForm();
+  }
+
+  formatNumber(value: number | string): string {
+    // Convert to number first to handle decimals properly
+    const num = typeof value === 'number' ? value : parseFloat(String(value));
+    if (isNaN(num)) return '';
+    // Round to integer and format with thousands separator
+    return Math.round(num).toLocaleString('es-CO');
+  }
+
+  getFormattedAmount(transactionId: string): string {
+    return this.formattedAmounts.get(transactionId) || '';
+  }
+
+  onAmountInput(event: Event, transaction: EditableTransaction) {
+    const input = event.target as HTMLInputElement;
+    const rawValue = input.value.replace(/\D/g, '');
+
+    if (rawValue) {
+      transaction.amount = parseInt(rawValue, 10);
+      this.formattedAmounts.set(transaction.id, this.formatNumber(rawValue));
+    } else {
+      transaction.amount = 0;
+      this.formattedAmounts.set(transaction.id, '');
+    }
   }
 
   trackByTransactionId(index: number, transaction: EditableTransaction): string {

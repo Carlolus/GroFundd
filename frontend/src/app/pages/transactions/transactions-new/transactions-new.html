@@ -149,7 +149,8 @@
               <label>Monto</label>
               <div class="amount-input">
                 <span class="currency">$</span>
-                <input type="number" [(ngModel)]="transaction.amount" min="0" step="1000">
+                <input type="text" [value]="getFormattedAmount(transaction.id)"
+                  (input)="onAmountInput($event, transaction)" placeholder="0">
               </div>
             </div>
 

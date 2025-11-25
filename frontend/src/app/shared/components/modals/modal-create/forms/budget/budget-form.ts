@@ -37,6 +37,9 @@ export class BudgetForm implements OnInit {
   filteredCategories: Category[] = [];
   selectedCategoryName = '';
 
+  // Formatted amount for display
+  formattedLimitAmount = '';
+
   // Months
   months = [
     { value: 1, label: 'Enero' },
@@ -82,6 +85,10 @@ export class BudgetForm implements OnInit {
       if (selected) {
         this.selectedCategoryName = selected.name;
       }
+      // Format initial amount
+      if (this.data.limit_amount) {
+        this.formattedLimitAmount = this.formatNumber(this.data.limit_amount);
+      }
     }
   }
 
@@ -108,6 +115,27 @@ export class BudgetForm implements OnInit {
     this.data.category = category.id;
     this.selectedCategoryName = category.name;
     this.showCategoryDropdown = false;
+  }
+
+  formatNumber(value: number | string): string {
+    // Convert to number first to handle decimals properly
+    const num = typeof value === 'number' ? value : parseFloat(String(value));
+    if (isNaN(num)) return '';
+    // Round to integer and format with thousands separator
+    return Math.round(num).toLocaleString('es-CO');
+  }
+
+  onLimitAmountInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const rawValue = input.value.replace(/\D/g, '');
+
+    if (rawValue) {
+      this.data.limit_amount = parseInt(rawValue, 10);
+      this.formattedLimitAmount = this.formatNumber(rawValue);
+    } else {
+      this.data.limit_amount = null;
+      this.formattedLimitAmount = '';
+    }
   }
 
   async onSubmit() {

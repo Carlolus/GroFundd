@@ -43,6 +43,9 @@ export class TransactionsManualComponent implements OnInit {
     modalMessage = signal('');
     modalImage = signal('');
 
+    // Formatted amounts for display (key: transaction.id, value: formatted string)
+    formattedAmounts: Map<string, string> = new Map();
+
     constructor(
         private categoryService: CategoryService,
         private transactionService: TransactionService,
@@ -83,14 +86,41 @@ export class TransactionsManualComponent implements OnInit {
         };
 
         this.editableTransactions.push(newTransaction);
+        this.formattedAmounts.set(newTransaction.id, '');
     }
 
     removeTransaction(id: string) {
         this.editableTransactions = this.editableTransactions.filter(t => t.id !== id);
+        this.formattedAmounts.delete(id);
     }
 
     trackByTransactionId(index: number, transaction: EditableTransaction): string {
         return transaction.id;
+    }
+
+    formatNumber(value: number | string): string {
+        // Convert to number first to handle decimals properly
+        const num = typeof value === 'number' ? value : parseFloat(String(value));
+        if (isNaN(num)) return '';
+        // Round to integer and format with thousands separator
+        return Math.round(num).toLocaleString('es-CO');
+    }
+
+    getFormattedAmount(transactionId: string): string {
+        return this.formattedAmounts.get(transactionId) || '';
+    }
+
+    onAmountInput(event: Event, transaction: EditableTransaction) {
+        const input = event.target as HTMLInputElement;
+        const rawValue = input.value.replace(/\D/g, '');
+
+        if (rawValue) {
+            transaction.amount = parseInt(rawValue, 10);
+            this.formattedAmounts.set(transaction.id, this.formatNumber(rawValue));
+        } else {
+            transaction.amount = 0;
+            this.formattedAmounts.set(transaction.id, '');
+        }
     }
 
     async saveAllTransactions() {
@@ -127,6 +157,7 @@ export class TransactionsManualComponent implements OnInit {
 
     resetForm() {
         this.editableTransactions = [];
+        this.formattedAmounts.clear();
         this.initManualMode();
     }
 
