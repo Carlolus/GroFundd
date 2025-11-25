@@ -1,8 +1,8 @@
 <div class="main-layout">
-    <app-navbar (toggleSidebar)="sidebarOpen = !sidebarOpen"></app-navbar>
+    <app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
 
     <div class="layout-content">
-        <app-sidebar [isOpen]="sidebarOpen" (toggle)="sidebarOpen = !sidebarOpen"></app-sidebar>
+        <app-sidebar [isOpen]="sidebarOpen" (toggle)="toggleSidebar()"></app-sidebar>
 
         <main class="main-content" [class.sidebar-open]="sidebarOpen">
             <router-outlet></router-outlet>
