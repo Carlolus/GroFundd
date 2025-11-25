@@ -1,0 +1,162 @@
+<div class="evaluation-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="title-section">
+            <h1>Evaluación Financiera</h1>
+            <p class="subtitle">Análisis inteligente de tu desempeño mensual</p>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="month-select">Mes</label>
+                <select id="month-select" [(ngModel)]="selectedMonth">
+                    <option *ngFor="let month of monthOptions; let i = index" [value]="i + 1">
+                        {{ month }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="year-select">Año</label>
+                <select id="year-select" [(ngModel)]="selectedYear">
+                    <option *ngFor="let year of yearOptions" [value]="year">
+                        {{ year }}
+                    </option>
+                </select>
+            </div>
+
+            <button class="evaluate-btn" (click)="evaluateMonth()" [disabled]="isLoading">
+                <svg *ngIf="!isLoading" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                        fill="currentColor" />
+                </svg>
+                <svg *ngIf="isLoading" class="spinner" width="20" height="20" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25" />
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" fill="none"
+                        stroke-linecap="round" />
+                </svg>
+                {{ isLoading ? 'Analizando...' : 'Evaluar' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="loading-card">
+            <div class="loading-icon">
+                <svg class="spinner-large" width="64" height="64" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" opacity="0.25" />
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="2" fill="none"
+                        stroke-linecap="round" />
+                </svg>
+            </div>
+            <h3>Analizando tus finanzas...</h3>
+            <p>La IA está evaluando tu desempeño financiero</p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error && !isLoading">
+        <div class="error-card">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#ef4444" stroke-width="2" />
+                <path d="M12 8v4M12 16h.01" stroke="#ef4444" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <h3>Error al generar evaluación</h3>
+            <p>{{ error }}</p>
+            <button class="retry-btn" (click)="evaluateMonth()">Intentar nuevamente</button>
+        </div>
+    </div>
+
+    <!-- Evaluation Results -->
+    <div class="results-container" *ngIf="evaluation && !isLoading">
+        <!-- Score Card -->
+        <div class="score-card" [style.background]="getScoreGradient()">
+            <div class="score-content">
+                <div class="score-circle">
+                    <svg class="progress-ring" width="200" height="200">
+                        <circle class="progress-ring-bg" cx="100" cy="100" r="85" />
+                        <circle class="progress-ring-fill" cx="100" cy="100" r="85" [style.stroke-dasharray]="534.07"
+                            [style.stroke-dashoffset]="534.07 - (534.07 * getScorePercentage() / 100)" />
+                    </svg>
+                    <div class="score-value">
+                        <span class="score-number">{{ evaluation.score.toFixed(1) }}</span>
+                        <span class="score-max">/10</span>
+                    </div>
+                </div>
+                <div class="score-label">{{ getScoreLabel() }}</div>
+            </div>
+        </div>
+
+        <!-- Evaluation Text -->
+        <div class="evaluation-text-card">
+            <h2>Evaluación General</h2>
+            <p class="evaluation-text">{{ evaluation.evaluation }}</p>
+        </div>
+
+        <!-- Highlights Grid -->
+        <div class="highlights-grid">
+            <div class="highlight-card positive">
+                <div class="card-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <h3>Logros</h3>
+                </div>
+                <ul class="highlights-list">
+                    <li *ngFor="let item of evaluation.highlights.positive">{{ item }}</li>
+                </ul>
+            </div>
+
+            <div class="highlight-card negative">
+                <div class="card-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <h3>Áreas de Mejora</h3>
+                </div>
+                <ul class="highlights-list">
+                    <li *ngFor="let item of evaluation.highlights.negative">{{ item }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations-section">
+            <h2>Recomendaciones</h2>
+            <div class="recommendations-grid">
+                <div class="recommendation-card" *ngFor="let rec of evaluation.recommendations; let i = index">
+                    <div class="recommendation-number">{{ i + 1 }}</div>
+                    <p>{{ rec }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="insights-section" *ngIf="evaluation.insights.length > 0">
+            <h2>Insights</h2>
+            <div class="insights-list">
+                <div class="insight-item" *ngFor="let insight of evaluation.insights">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" fill="currentColor" />
+                    </svg>
+                    <p>{{ insight }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!evaluation && !isLoading && !error">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                stroke="currentColor" stroke-width="2" fill="none" />
+        </svg>
+        <h3>Selecciona un mes para evaluar</h3>
+        <p>Obtén un análisis detallado de tu desempeño financiero</p>
+    </div>
+</div>

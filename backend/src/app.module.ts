@@ -9,6 +9,7 @@ import { BudgetModule } from './modules/budget/budget.module';
 import { InsightModule } from './modules/insight/insight.module';
 import { AiLogsModule } from './modules/ai_logs/ai_logs.module';
 import { AiParseModule } from './modules/ai-parse/ai-parse.module';
+import { AiEvaluationModule } from './modules/ai-evaluation/ai-evaluation.module';
 import { GeminiModule } from './modules/shared/gemini.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { GeminiModule } from './modules/shared/gemini.module';
     InsightModule,
     AiLogsModule,
     AiParseModule,
+    AiEvaluationModule,
     GeminiModule
   ],
 })

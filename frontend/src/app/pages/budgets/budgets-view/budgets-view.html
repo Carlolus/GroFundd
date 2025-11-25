@@ -30,12 +30,22 @@
       </div>
     </div>
 
-    <button class="new-transaction-btn" (click)="openModal('budget')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-      </svg>
-      Nuevo Presupuesto
-    </button>
+    <div class="action-buttons">
+      <button class="evaluation-btn" routerLink="/dashboard/budgets/evaluation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+            fill="currentColor" />
+        </svg>
+        Evaluación IA
+      </button>
+
+      <button class="new-transaction-btn" (click)="openModal('budget')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Nuevo Presupuesto
+      </button>
+    </div>
   </div>
 
   <!-- Budget Cards Grid -->

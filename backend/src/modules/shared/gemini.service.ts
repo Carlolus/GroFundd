@@ -150,4 +150,129 @@ Respond **only** with the final JSON object.
       return { categories: [], transactions: [] };
     }
   }
+
+  async evaluateFinancialMonth(
+    budgetSummary: any,
+    incomeExpense: any,
+    expensesByCategory: any[],
+    userId: string,
+    currency: string,
+    month: number,
+    year: number,
+  ): Promise<any> {
+    const monthNames = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    const prompt = `
+Eres un asesor financiero experto y empático. Analiza los datos financieros del mes de ${monthNames[month - 1]} ${year} y proporciona una evaluación personalizada en español.
+
+DATOS FINANCIEROS DEL USUARIO:
+
+PRESUPUESTOS:
+- Total presupuestado: ${budgetSummary.totals?.total_budgeted || 0} ${currency}
+- Total gastado: ${budgetSummary.totals?.total_spent || 0} ${currency}
+- Total restante: ${budgetSummary.totals?.total_remaining || 0} ${currency}
+- Porcentaje usado: ${budgetSummary.totals?.overall_percentage || 0}%
+- Categorías en control: ${budgetSummary.totals?.categories_on_track || 0}
+- Categorías en alerta: ${budgetSummary.totals?.categories_warning || 0}
+- Categorías excedidas: ${budgetSummary.totals?.categories_exceeded || 0}
+- Categorías sin presupuesto: ${budgetSummary.totals?.categories_without_budget || 0}
+
+INGRESOS VS GASTOS:
+- Ingresos del mes: ${incomeExpense.income || 0} ${currency}
+- Gastos del mes: ${incomeExpense.expense || 0} ${currency}
+- Diferencia (ahorro): ${incomeExpense.difference || 0} ${currency}
+
+GASTOS POR CATEGORÍA:
+${expensesByCategory.map(cat => `- ${cat.category_name}: ${cat.total} ${currency} (${cat.percentage.toFixed(1)}%)`).join('\n')}
+
+TIEMPO:
+- Días transcurridos: ${budgetSummary.time_info?.days_passed || 0}
+- Días en el mes: ${budgetSummary.time_info?.days_in_month || 0}
+- Progreso del mes: ${budgetSummary.time_info?.month_progress_percentage || 0}%
+
+INSTRUCCIONES:
+1. Analiza el desempeño financiero del usuario de manera constructiva
+2. Identifica logros y áreas de mejora
+3. Proporciona recomendaciones específicas y accionables
+4. Asigna una puntuación del 1 al 10 basada en:
+   - Control de presupuesto (40%)
+   - Capacidad de ahorro (30%)
+   - Distribución de gastos (20%)
+   - Tendencias positivas (10%)
+
+Responde SOLO con JSON válido, sin texto adicional antes o después:
+
+{
+  "evaluation": "Evaluación general en 2-3 párrafos, tono positivo y motivador",
+  "score": número decimal del 1.0 al 10.0,
+  "highlights": {
+    "positive": ["logro específico 1", "logro específico 2", "logro específico 3"],
+    "negative": ["área de mejora 1", "área de mejora 2"]
+  },
+  "recommendations": [
+    "Recomendación específica y accionable 1",
+    "Recomendación específica y accionable 2",
+    "Recomendación específica y accionable 3"
+  ],
+  "insights": [
+    "Insight sobre patrones de gasto 1",
+    "Insight sobre tendencias 2"
+  ]
 }
+`;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const responseText = result.response.text();
+
+      console.log("📊 Respuesta de evaluación de Gemini:", responseText);
+
+      // Log the interaction
+      await this.aiLogService.create({
+        userId,
+        type: 'Monthly Evaluation',
+        input_text: prompt,
+        output_text: responseText,
+        model: 'gemini-2.5-flash',
+      });
+
+      // Parse JSON response
+      let jsonString = responseText.trim();
+
+      // Remove markdown code blocks if present
+      if (jsonString.startsWith('```json')) {
+        jsonString = jsonString.substring(7);
+      } else if (jsonString.startsWith('```')) {
+        jsonString = jsonString.substring(3);
+      }
+
+      if (jsonString.endsWith('```')) {
+        jsonString = jsonString.substring(0, jsonString.length - 3);
+      }
+
+      jsonString = jsonString.trim();
+
+      const parsed = JSON.parse(jsonString);
+      return parsed;
+
+    } catch (e) {
+      console.error("🚫 ERROR: Fallo al evaluar el mes con Gemini:", e);
+
+      // Return a fallback response
+      return {
+        evaluation: 'No se pudo generar la evaluación automática en este momento.',
+        score: 5.0,
+        highlights: {
+          positive: ['Datos procesados correctamente'],
+          negative: ['Error al generar evaluación detallada'],
+        },
+        recommendations: ['Intenta nuevamente en unos momentos'],
+        insights: [],
+      };
+    }
+  }
+}
+
