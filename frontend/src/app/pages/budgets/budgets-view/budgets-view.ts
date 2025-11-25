@@ -38,6 +38,13 @@ export class BudgetsView implements OnInit {
   searchTerm = '';
   openMenuId: string | null = null;
 
+  // Filter properties
+  selectedMonth: number;
+  selectedYear: number;
+  monthOptions = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  yearOptions: number[] = [];
+
   // Detail Modal
   showDetailModal = false;
   selectedBudget: BudgetItem | null = null;
@@ -46,7 +53,18 @@ export class BudgetsView implements OnInit {
     private router: Router,
     private budgetService: BudgetService,
     private userService: UserService
-  ) { }
+  ) {
+    // Initialize with current date
+    const now = new Date();
+    this.selectedMonth = now.getMonth() + 1;
+    this.selectedYear = now.getFullYear();
+
+    // Generate year options (current year ± 5 years)
+    const currentYear = now.getFullYear();
+    for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+      this.yearOptions.push(i);
+    }
+  }
 
   ngOnInit() {
     this.user = this.userService.getCurrentUser();
@@ -54,7 +72,7 @@ export class BudgetsView implements OnInit {
   }
 
   loadBudgets() {
-    this.budgetService.getBudgetsSummary().subscribe({
+    this.budgetService.getBudgetsSummary(this.selectedMonth, this.selectedYear).subscribe({
       next: (data) => {
         this.budgetsSummary = data;
         this.filterBudgets();
@@ -65,6 +83,10 @@ export class BudgetsView implements OnInit {
         this.filteredBudgets = [];
       }
     });
+  }
+
+  onFilterChange() {
+    this.loadBudgets();
   }
 
   filterBudgets() {

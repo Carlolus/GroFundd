@@ -10,6 +10,26 @@
         (ngModelChange)="onSearchChange()">
     </div>
 
+    <div class="filters-wrapper">
+      <div class="filter-group">
+        <label for="month-filter">Mes</label>
+        <select id="month-filter" [(ngModel)]="selectedMonth" (ngModelChange)="onFilterChange()">
+          <option *ngFor="let month of monthOptions; let i = index" [value]="i + 1">
+            {{ month }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="year-filter">Año</label>
+        <select id="year-filter" [(ngModel)]="selectedYear" (ngModelChange)="onFilterChange()">
+          <option *ngFor="let year of yearOptions" [value]="year">
+            {{ year }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <button class="new-transaction-btn" (click)="openModal('budget')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
         <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
