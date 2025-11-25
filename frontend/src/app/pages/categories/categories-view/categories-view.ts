@@ -20,6 +20,7 @@ import { CategoryDetailComponent } from '../category-detail/category-detail.comp
 })
 export class CategoriesView {
   categories: Category[] = [];
+  filteredCategories: Category[] = [];
   searchTerm = '';
   openMenuId: number | null = null;
   constructor(
@@ -31,12 +32,34 @@ export class CategoriesView {
     this.categoryService.getCategories().subscribe({
       next: (data) => {
         this.categories = data || [];
+        this.filteredCategories = data || [];
       },
       error: (err) => {
         console.error('Error loading categories:', err);
         this.categories = [];
+        this.filteredCategories = [];
       }
     });
+  }
+
+  filterCategories() {
+    if (!this.searchTerm.trim()) {
+      this.filteredCategories = this.categories;
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredCategories = this.categories.filter(category => {
+      const nameMatch = category.name.toLowerCase().includes(term);
+      const aiGeneratedMatch = category.isAiGenerated && 'ia'.includes(term);
+      const manualMatch = !category.isAiGenerated && 'manual'.includes(term);
+
+      return nameMatch || aiGeneratedMatch || manualMatch;
+    });
+  }
+
+  onSearchChange() {
+    this.filterCategories();
   }
 
   async ngOnInit() {

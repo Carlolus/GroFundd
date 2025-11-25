@@ -50,13 +50,37 @@ export class TransactionsView {
     this.transactionService.getTransactions().subscribe({
       next: (data) => {
         this.transactions = data || [];
+        this.filteredTransactions = data || [];
         console.log(this.transactions);
       },
       error: (err) => {
         console.error('Error loading categories:', err);
         this.transactions = [];
+        this.filteredTransactions = [];
       }
     });
+  }
+
+  filterTransactions() {
+    if (!this.searchTerm.trim()) {
+      this.filteredTransactions = this.transactions;
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredTransactions = this.transactions.filter(transaction => {
+      const categoryMatch = transaction.category?.name?.toLowerCase().includes(term);
+      const descriptionMatch = transaction.description?.toLowerCase().includes(term);
+      const amountMatch = transaction.amount.toString().includes(term);
+      const typeMatch = (transaction.type === 'income' ? 'ingreso' : 'gasto').includes(term);
+      const aiSuggestionMatch = transaction.aiCategorySuggestion?.toLowerCase().includes(term);
+
+      return categoryMatch || descriptionMatch || amountMatch || typeMatch || aiSuggestionMatch;
+    });
+  }
+
+  onSearchChange() {
+    this.filterTransactions();
   }
 
   async ngOnInit() {
@@ -70,6 +94,7 @@ export class TransactionsView {
 
   // Sample data - replace with your actual data
   transactions: Transaction[] = [];
+  filteredTransactions: Transaction[] = [];
 
   trackByTransactionId(index: number, transaction: Transaction): string {
     return transaction.id || index.toString();
